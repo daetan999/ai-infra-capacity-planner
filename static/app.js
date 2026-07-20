@@ -311,7 +311,10 @@
   }
 
   function selectedScenarioIds() {
-    return Array.from(document.querySelectorAll(".compare-check:checked"), (input) => input.value);
+    return Array.from(
+      document.querySelectorAll(".compare-check:checked"),
+      (input) => Number(input.value),
+    );
   }
 
   function comparisonRows(payload) {
@@ -323,7 +326,21 @@
   function renderComparison(payload) {
     const scenarios = comparisonRows(payload);
     const body = byId("comparison-body");
+    const head = byId("comparison-head");
     body.replaceChildren();
+    head.replaceChildren();
+    const headerRow = document.createElement("tr");
+    const measureHeader = document.createElement("th");
+    measureHeader.scope = "col";
+    measureHeader.textContent = "Measure";
+    headerRow.append(measureHeader);
+    scenarios.forEach((scenario) => {
+      const scenarioHeader = document.createElement("th");
+      scenarioHeader.scope = "col";
+      scenarioHeader.textContent = scenario.name || "Scenario";
+      headerRow.append(scenarioHeader);
+    });
+    head.append(headerRow);
     const measures = [
       ["Scenario", (item) => item.name],
       ["Accelerators", (item) => {
@@ -405,6 +422,12 @@
   });
   byId("scenario-filter").addEventListener("input", (event) => renderScenarioList(event.target.value));
   byId("target-utilization").addEventListener("input", (event) => { byId("target-utilization-value").textContent = `${event.target.value}%`; });
+  byId("workload-mode").addEventListener("change", (event) => {
+    const trainingWindow = byId("training-window");
+    if (["llm_training", "batch_ai_hpc"].includes(event.target.value) && Number(trainingWindow.value) === 0) {
+      trainingWindow.value = "168";
+    }
+  });
   byId("compare-scenarios").addEventListener("click", compareSelected);
   byId("export-json").addEventListener("click", () => exportScenario("json"));
   byId("export-markdown").addEventListener("click", () => exportScenario("markdown"));

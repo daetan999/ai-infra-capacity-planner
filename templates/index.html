@@ -150,7 +150,7 @@
                 </div>
                 <div class="field">
                   <label for="requests-per-second">Requests / second</label>
-                  <input id="requests-per-second" name="requests_per_second" type="number" min="0" step="0.1" value="18" required>
+                  <input id="requests-per-second" name="requests_per_second" type="number" min="0.1" step="0.1" value="18" required>
                 </div>
                 <div class="field">
                   <label for="concurrency">Concurrency</label>
@@ -297,7 +297,7 @@
               <div class="panel-header"><div><p class="step-label">04 · Trade-off review</p><h2 id="comparison-title">Scenario comparison</h2></div><button class="button button-quiet button-small" id="compare-scenarios" type="button">Compare selected</button></div>
               <p class="comparison-help">Select two or three scenarios from the portfolio to compare capacity and commercial bands.</p>
               <div class="table-wrap" tabindex="0" aria-label="Scenario comparison table">
-                <table><thead><tr><th scope="col">Measure</th><th scope="col">Scenario A</th><th scope="col">Scenario B</th></tr></thead><tbody id="comparison-body"><tr><th scope="row">Selection</th><td colspan="2">No comparison loaded</td></tr></tbody></table>
+                <table><thead id="comparison-head"><tr><th scope="col">Measure</th><th scope="col">Scenario A</th><th scope="col">Scenario B</th></tr></thead><tbody id="comparison-body"><tr><th scope="row">Selection</th><td colspan="2">No comparison loaded</td></tr></tbody></table>
               </div>
             </section>
           </section>

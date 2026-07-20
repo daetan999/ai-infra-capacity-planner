@@ -1,5 +1,5 @@
-from pathlib import Path
 import re
+from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -150,6 +150,8 @@ def test_interactive_states_exports_and_comparison_have_accessible_hooks() -> No
     assert "innerHTML" not in script
     assert "setRequestState" in script
     assert "AbortController" in script
+    assert "Number(input.value)" in script
+    assert 'id="comparison-head"' in html
 
 
 def test_renderer_understands_the_engine_result_contract() -> None:
