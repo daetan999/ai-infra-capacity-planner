@@ -42,10 +42,14 @@ def test_form_controls_are_labeled_and_cover_material_inputs() -> None:
     html = read(TEMPLATE)
     expected_controls = {
         "scenario-name",
+        "model-family",
         "model-parameters",
         "precision",
         "context-length",
         "tokens-per-request",
+        "average-input-tokens",
+        "average-output-tokens",
+        "tokens-per-day",
         "requests-per-second",
         "concurrency",
         "peak-factor",
@@ -55,6 +59,7 @@ def test_form_controls_are_labeled_and_cover_material_inputs() -> None:
         "training-window",
         "storage-required",
         "monthly-growth",
+        "demand-growth",
         "ingress",
         "egress",
         "region",
@@ -64,6 +69,35 @@ def test_form_controls_are_labeled_and_cover_material_inputs() -> None:
     for control_id in expected_controls:
         assert f'id="{control_id}"' in html
         assert re.search(rf'<label[^>]+for="{control_id}"', html)
+
+
+def test_form_payload_uses_canonical_capacity_input_keys() -> None:
+    html = read(TEMPLATE)
+    script = read(SCRIPT)
+    canonical_keys = {
+        "model_parameters_billions",
+        "model_family",
+        "context_tokens",
+        "average_input_tokens",
+        "average_output_tokens",
+        "tokens_per_day",
+        "dataset_tb",
+        "storage_tb",
+        "storage_growth_pct",
+        "growth_pct",
+    }
+
+    for key in canonical_keys:
+        assert f'name="{key}"' in html
+        assert f'"{key}"' in script
+
+    for profile_id in (
+        "illustrative-efficient",
+        "illustrative-balanced",
+        "illustrative-memory-dense",
+    ):
+        assert f'value="{profile_id}"' in html
+    assert 'value="fp8"' not in html
 
 
 def test_results_make_estimates_and_uncertainty_visible() -> None:
