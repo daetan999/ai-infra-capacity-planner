@@ -203,8 +203,17 @@ class SizingInputs:
 
         _validate_bounded_percent("target_utilization_pct", normalized, 20, 95)
         _validate_bounded_percent("availability_target_pct", normalized, 90, 100)
+        if mode in {WorkloadMode.LLM_TRAINING, WorkloadMode.BATCH_AI_HPC}:
+            if float(normalized["training_window_hours"]) == 0:
+                raise ValueError("training_window_hours must be greater than zero")
         required = required_input_fields(mode)
-        missing = tuple(sorted(field for field in required if field not in values))
+        missing = tuple(
+            sorted(
+                field
+                for field in required
+                if field not in values or _is_missing_evidence(values[field])
+            )
+        )
         return cls(
             mode=mode,
             accelerator_profile=str(normalized["accelerator_profile"]),
@@ -335,9 +344,26 @@ def _positive_number(name: str, raw: Any) -> float:
         value = float(raw)
     except (TypeError, ValueError) as exc:
         raise ValueError(f"{name} must be a number") from exc
-    if value < 0 or (value == 0 and name not in {"growth_pct", "storage_growth_pct"}):
+    zero_allowed = {
+        "dataset_tb",
+        "egress_gb_per_day",
+        "egress_gbps",
+        "growth_pct",
+        "ingress_gb_per_day",
+        "ingress_gbps",
+        "input_tokens",
+        "output_tokens",
+        "storage_growth_pct",
+        "storage_tb",
+        "training_window_hours",
+    }
+    if value < 0 or (value == 0 and name not in zero_allowed):
         raise ValueError(f"{name} must be greater than zero")
     return value
+
+
+def _is_missing_evidence(value: Any) -> bool:
+    return value is None or (isinstance(value, str) and not value.strip())
 
 
 def _validate_bounded_percent(

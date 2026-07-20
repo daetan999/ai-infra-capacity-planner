@@ -214,3 +214,35 @@ def test_invalid_inputs_fail_with_actionable_messages(
 ) -> None:
     with pytest.raises(ValueError, match=message):
         calculate_capacity({**BASE_INPUTS, **overrides})
+
+
+def test_non_applicable_api_fields_may_be_zero() -> None:
+    result = calculate_capacity(
+        {
+            "workload_mode": "llm_inference",
+            "model_parameters_billions": 13,
+            "average_input_tokens": 500,
+            "average_output_tokens": 0,
+            "requests_per_second": 4,
+            "concurrency": 20,
+            "peak_factor": 1.2,
+            "training_window_hours": 0,
+            "dataset_tb": 0,
+            "storage_tb": 0,
+            "ingress_gbps": 0,
+            "egress_gbps": 0,
+        }
+    )
+
+    assert result["capacity"]["accelerators"]["min"] > 0
+
+
+def test_training_requires_a_nonzero_completion_window() -> None:
+    with pytest.raises(ValueError, match="training_window_hours must be greater than zero"):
+        calculate_capacity(
+            {
+                **BASE_INPUTS,
+                "workload_mode": "llm_training",
+                "training_window_hours": 0,
+            }
+        )
