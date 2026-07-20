@@ -7,7 +7,6 @@ import pytest
 from app.domain import WorkloadMode
 from app.engine import calculate_capacity, load_accelerator_profiles
 
-
 BASE_INPUTS = {
     "mode": "llm_inference",
     "accelerator_profile": "illustrative-balanced",
@@ -60,6 +59,37 @@ def test_calculation_is_deterministic_and_json_friendly() -> None:
     assert first["profile"]["illustrative"] is True
     assert isinstance(first["benchmark_assumptions"], list)
     assert isinstance(first["validation_questions"], list)
+
+
+def test_api_alias_mapping_matches_canonical_engine_inputs() -> None:
+    api_inputs = {
+        "workload_mode": BASE_INPUTS["mode"],
+        "model_parameters_billions": BASE_INPUTS["model_parameters_billion"],
+        "average_input_tokens": BASE_INPUTS["input_tokens"],
+        "average_output_tokens": BASE_INPUTS["output_tokens"],
+        "context_tokens": BASE_INPUTS["context_tokens"],
+        "requests_per_second": BASE_INPUTS["requests_per_second"],
+        "concurrency": BASE_INPUTS["concurrent_users"],
+        "peak_factor": BASE_INPUTS["peak_multiplier"],
+        "latency_target_ms": BASE_INPUTS["latency_target_ms"],
+        "availability_target_pct": BASE_INPUTS["availability_target_pct"],
+        "dataset_tb": BASE_INPUTS["dataset_tb"],
+        "training_window_hours": BASE_INPUTS["training_window_hours"],
+        "storage_tb": BASE_INPUTS["storage_tb"],
+        "storage_growth_pct": BASE_INPUTS["storage_growth_pct"],
+        "ingress_gbps": BASE_INPUTS["ingress_gb_per_day"] * 8 / 86_400,
+        "egress_gbps": BASE_INPUTS["egress_gb_per_day"] * 8 / 86_400,
+        "region": BASE_INPUTS["region"],
+        "target_utilization_pct": BASE_INPUTS["target_utilization_pct"],
+        "growth_pct": BASE_INPUTS["growth_pct"],
+        "assumption_overrides": {
+            "accelerator_profile": BASE_INPUTS["accelerator_profile"],
+            "batch_size": BASE_INPUTS["batch_size"],
+            "quantization": BASE_INPUTS["precision"],
+        },
+    }
+
+    assert calculate_capacity(api_inputs) == calculate_capacity(BASE_INPUTS)
 
 
 @pytest.mark.parametrize("mode", [mode.value for mode in WorkloadMode])
