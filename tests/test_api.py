@@ -309,3 +309,25 @@ def test_unknown_export_format_is_rejected(client: TestClient) -> None:
 
     assert response.status_code == 422
     assert response.json()["error"]["code"] == "validation_error"
+
+
+def test_fictional_demo_seed_is_explicit_and_idempotent(tmp_path: Path) -> None:
+    database_path = tmp_path / "seeded.db"
+
+    for _ in range(2):
+        with TestClient(
+            create_app(
+                database_path=database_path,
+                sizing_function=deterministic_sizer,
+                seed_demo_data=True,
+            )
+        ) as seeded_client:
+            scenarios = unwrap(seeded_client.get("/api/scenarios"))
+
+        assert len(scenarios) == 3
+        assert {scenario["workload_mode"] for scenario in scenarios} == {
+            "llm_training",
+            "llm_inference",
+            "rag_inference",
+        }
+        assert all("fictional" in scenario["description"].lower() for scenario in scenarios)

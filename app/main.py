@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import logging
 import os
@@ -19,6 +18,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from app.demo_data import fresh_demo_scenarios
+from app.engine import calculate_capacity
 from app.repository import ScenarioNotFoundError, ScenarioRecord, ScenarioRepository
 from app.schemas import ScenarioCompare, ScenarioCreate
 
@@ -30,14 +31,19 @@ def create_app(
     *,
     database_path: str | Path | None = None,
     sizing_function: SizingFunction | None = None,
+    seed_demo_data: bool = False,
 ) -> FastAPI:
     """Create an application with replaceable storage location and sizing engine."""
 
     resolved_path = Path(
-        database_path or os.getenv("CAPACITY_PLANNER_DB", "data/capacity-planner.db")
+        database_path
+        or os.getenv("DATABASE_PATH")
+        or os.getenv("CAPACITY_PLANNER_DB", "data/capacity_planner.db")
     )
     repository = ScenarioRepository(resolved_path)
-    calculate = sizing_function or _calculate_with_engine
+    if seed_demo_data:
+        _seed_fictional_scenarios(repository)
+    calculate = sizing_function or calculate_capacity
     application = FastAPI(
         title="Enterprise AI Capacity & Commercial Sizing Planner",
         version="1.0.0",
@@ -196,26 +202,12 @@ def _run_calculation(
     return calculate(engine_inputs)
 
 
-def _calculate_with_engine(inputs: Mapping[str, Any]) -> Mapping[str, Any]:
-    try:
-        from app.engine import calculate_capacity
-    except ModuleNotFoundError as exception:
-        if exception.name != "app.engine":
-            raise
-        return _pending_engine_result(inputs)
-    return calculate_capacity(inputs)
-
-
-def _pending_engine_result(inputs: Mapping[str, Any]) -> Mapping[str, Any]:
-    canonical = json.dumps(inputs, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-    return {
-        "status": "engine_pending",
-        "input_fingerprint": hashlib.sha256(canonical.encode()).hexdigest()[:12],
-        "confidence": {
-            "level": "low",
-            "reason": "Sizing profiles are not installed in this runtime.",
-        },
-    }
+def _seed_fictional_scenarios(repository: ScenarioRepository) -> None:
+    if repository.list():
+        return
+    for scenario in fresh_demo_scenarios():
+        validated = ScenarioCreate.model_validate(scenario)
+        repository.create(validated.model_dump(mode="json", exclude_none=True))
 
 
 def _success(data: Any) -> dict[str, Any]:
@@ -268,4 +260,11 @@ def _markdown_export(projection: Mapping[str, Any]) -> str:
     return "\n".join(lines)
 
 
-app = create_app()
+def _environment_flag(name: str, *, default: bool) -> bool:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+app = create_app(seed_demo_data=_environment_flag("SEED_DEMO_DATA", default=True))
