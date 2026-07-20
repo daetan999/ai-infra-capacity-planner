@@ -203,9 +203,11 @@ class SizingInputs:
 
         _validate_bounded_percent("target_utilization_pct", normalized, 20, 95)
         _validate_bounded_percent("availability_target_pct", normalized, 90, 100)
-        if mode in {WorkloadMode.LLM_TRAINING, WorkloadMode.BATCH_AI_HPC}:
-            if float(normalized["training_window_hours"]) == 0:
-                raise ValueError("training_window_hours must be greater than zero")
+        if (
+            mode in {WorkloadMode.LLM_TRAINING, WorkloadMode.BATCH_AI_HPC}
+            and float(normalized["training_window_hours"]) == 0
+        ):
+            raise ValueError("training_window_hours must be greater than zero")
         required = required_input_fields(mode)
         missing = tuple(
             sorted(
