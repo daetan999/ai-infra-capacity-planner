@@ -1,0 +1,13 @@
+services:
+  planner:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_PATH: /app/data/capacity_planner.db
+      SEED_DEMO_DATA: "true"
+    volumes:
+      - planner-data:/app/data
+
+volumes:
+  planner-data:
