@@ -33,7 +33,7 @@ def test_scenario_flows_from_validated_input_to_report(tmp_path: Path) -> None:
             "region": "fictional-integration-region",
             "target_utilization_pct": 65,
             "accelerator_profile": "illustrative-balanced",
-            "assumption_overrides": {"batch_size": 8, "quantization": "int8"},
+            "assumption_overrides": {"batch_size": 8},
         },
     }
 

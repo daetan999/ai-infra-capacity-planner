@@ -202,6 +202,11 @@ def _capacity_dimensions(
     storage_base = _storage_base(sizing)
     storage_min = storage_base * (1 + sizing.storage_growth_pct / 100)
     storage_max = storage_min * (1 + sizing.growth_pct / 100) * 1.2
+    storage_throughput_min, storage_throughput_max = _storage_throughput_range(
+        sizing,
+        accelerator_min,
+        accelerator_max,
+    )
     io_gbps = max(sizing.ingress_gb_per_day, sizing.egress_gb_per_day) * 8 / 86_400
     fabric_gbps = accelerator_min * (
         0.5 if sizing.mode is WorkloadMode.LLM_TRAINING else 0.12
@@ -233,6 +238,11 @@ def _capacity_dimensions(
         "cpu_cores": _range(cpu_min, cpu_max, "vCPU", integer=True),
         "memory_gb": _range(memory_min, memory_max, "GB", integer=True),
         "storage_tb": _range(storage_min, storage_max, "TB"),
+        "storage_throughput_gbps": _range(
+            storage_throughput_min,
+            storage_throughput_max,
+            "Gbps",
+        ),
         "network_gbps": _range(network_min, network_max, "Gbps"),
         "racks": _range(rack_min, rack_max, "racks", integer=True),
         "power_kw": _range(power_min, power_max, "kW"),
@@ -248,6 +258,33 @@ def _storage_base(sizing: SizingInputs) -> float:
     if sizing.mode is WorkloadMode.BATCH_AI_HPC:
         return max(sizing.storage_tb, sizing.dataset_tb * 2)
     return max(sizing.storage_tb, sizing.dataset_tb * 1.1)
+
+
+def _storage_throughput_range(
+    sizing: SizingInputs,
+    accelerator_min: int,
+    accelerator_max: int,
+) -> tuple[float, float]:
+    """Estimate the sustained storage path needed to keep the modeled fleet fed."""
+
+    window_seconds = max(sizing.training_window_hours * 3_600, 3_600)
+    dataset_scan_gbps = sizing.dataset_tb * 8_000 / window_seconds
+    transfer_gbps = max(sizing.ingress_gb_per_day, sizing.egress_gb_per_day) * 8 / 86_400
+    mode_factor = {
+        WorkloadMode.LLM_TRAINING: 3.0,
+        WorkloadMode.LLM_INFERENCE: 0.5,
+        WorkloadMode.RAG_INFERENCE: 1.6,
+        WorkloadMode.VISION_INFERENCE: 0.8,
+        WorkloadMode.BATCH_AI_HPC: 2.0,
+    }[sizing.mode]
+    minimum = max(
+        0.05,
+        dataset_scan_gbps * mode_factor,
+        transfer_gbps * sizing.peak_multiplier,
+        accelerator_min * 0.03,
+    )
+    maximum = max(minimum, minimum * 1.8, accelerator_max * 0.06)
+    return minimum, maximum
 
 
 def _views(

@@ -36,7 +36,6 @@ DEMO_SCENARIOS: tuple[dict[str, Any], ...] = (
             "accelerator_profile": "illustrative-memory-dense",
             "assumption_overrides": {
                 "batch_size": 64,
-                "quantization": "none",
             },
         },
     },
@@ -72,7 +71,6 @@ DEMO_SCENARIOS: tuple[dict[str, Any], ...] = (
             "accelerator_profile": "illustrative-balanced",
             "assumption_overrides": {
                 "batch_size": 8,
-                "quantization": "int8",
             },
         },
     },
@@ -108,7 +106,6 @@ DEMO_SCENARIOS: tuple[dict[str, Any], ...] = (
             "accelerator_profile": "illustrative-efficient",
             "assumption_overrides": {
                 "batch_size": 4,
-                "quantization": "none",
             },
         },
     },

@@ -314,12 +314,7 @@ def _normalize_aliases(raw: Mapping[str, Any]) -> dict[str, Any]:
 
     overrides = values.get("assumption_overrides")
     if isinstance(overrides, Mapping):
-        override_aliases = {
-            "accelerator_profile": "accelerator_profile",
-            "profile": "accelerator_profile",
-            "batch_size": "batch_size",
-            "quantization": "precision",
-        }
+        override_aliases = {"batch_size": "batch_size"}
         for source, target in override_aliases.items():
             if target not in values and source in overrides:
                 values[target] = overrides[source]

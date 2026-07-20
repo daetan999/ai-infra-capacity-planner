@@ -67,6 +67,7 @@ def test_api_alias_mapping_matches_canonical_engine_inputs() -> None:
         "model_parameters_billions": BASE_INPUTS["model_parameters_billion"],
         "average_input_tokens": BASE_INPUTS["input_tokens"],
         "average_output_tokens": BASE_INPUTS["output_tokens"],
+        "precision": BASE_INPUTS["precision"],
         "context_tokens": BASE_INPUTS["context_tokens"],
         "requests_per_second": BASE_INPUTS["requests_per_second"],
         "concurrency": BASE_INPUTS["concurrent_users"],
@@ -81,11 +82,10 @@ def test_api_alias_mapping_matches_canonical_engine_inputs() -> None:
         "egress_gbps": BASE_INPUTS["egress_gb_per_day"] * 8 / 86_400,
         "region": BASE_INPUTS["region"],
         "target_utilization_pct": BASE_INPUTS["target_utilization_pct"],
+        "accelerator_profile": BASE_INPUTS["accelerator_profile"],
         "growth_pct": BASE_INPUTS["growth_pct"],
         "assumption_overrides": {
-            "accelerator_profile": BASE_INPUTS["accelerator_profile"],
             "batch_size": BASE_INPUTS["batch_size"],
-            "quantization": BASE_INPUTS["precision"],
         },
     }
 
@@ -102,6 +102,7 @@ def test_every_workload_mode_returns_complete_indicative_ranges(mode: str) -> No
         "cpu_cores",
         "memory_gb",
         "storage_tb",
+        "storage_throughput_gbps",
         "network_gbps",
         "racks",
         "power_kw",

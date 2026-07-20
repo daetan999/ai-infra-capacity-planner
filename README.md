@@ -147,8 +147,9 @@ docker build -t capacity-planner .
 ```
 
 The suite covers deterministic calculation, profile validation, persistence, API errors, export,
-demo data, and interface contracts. CI enforces linting, an 80% branch-coverage floor, package
-creation, and a clean-checkout container build.
+demo data, and interface contracts. CI enforces linting, browser-script syntax, an 80% branch-coverage
+floor, and a clean-checkout container build. This application is deployed from its repository checkout
+or container image; it is not published as a standalone Python wheel.
 
 ## Repository map
 

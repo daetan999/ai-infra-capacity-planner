@@ -29,7 +29,7 @@ def scenario_payload(name: str = "Realtime assistant") -> dict[str, object]:
             "egress_gbps": 4.0,
             "region": "fictional-ap-southeast",
             "target_utilization_pct": 65,
-            "assumption_overrides": {"batch_size": 8, "quantization": "none"},
+            "assumption_overrides": {"batch_size": 8},
         },
     }
 

@@ -42,7 +42,7 @@ def scenario_payload(
             "egress_gbps": 4.0,
             "region": "fictional-ap-southeast",
             "target_utilization_pct": 65,
-            "assumption_overrides": {"batch_size": 8, "quantization": "none"},
+            "assumption_overrides": {"batch_size": 8},
         },
     }
 
@@ -93,6 +93,30 @@ def test_health_and_scenario_crud(client: TestClient) -> None:
     deleted = unwrap(client.delete("/api/scenarios/1"))
     assert deleted == {"id": 1, "deleted": True}
     assert unwrap(client.get("/api/scenarios")) == []
+
+
+@pytest.mark.parametrize(
+    "overrides",
+    [
+        {"derating_factor_pct": 50},
+        {"monthly_hours": 730},
+        {"power_rate_per_kwh": 0.14},
+        {"batch_size": 0},
+        {"batch_size": -4},
+        {"batch_size": True},
+    ],
+)
+def test_api_rejects_unsupported_or_invalid_assumption_overrides(
+    client: TestClient,
+    overrides: dict[str, object],
+) -> None:
+    payload = scenario_payload()
+    payload["inputs"]["assumption_overrides"] = overrides  # type: ignore[index]
+
+    response = client.post("/api/scenarios", json=payload)
+
+    assert response.status_code == 422
+    assert response.json()["success"] is False
 
 
 @pytest.mark.parametrize(

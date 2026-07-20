@@ -63,6 +63,8 @@ def test_form_controls_are_labeled_and_cover_material_inputs() -> None:
         "egress",
         "region",
         "target-utilization",
+        "accelerator-profile",
+        "batch-size",
     }
 
     for control_id in expected_controls:
@@ -106,6 +108,7 @@ def test_results_make_estimates_and_uncertainty_visible() -> None:
         "CPU cores",
         "Memory",
         "Storage",
+        "Storage I/O",
         "Network",
         "Racks",
         "Power",
@@ -159,6 +162,7 @@ def test_renderer_understands_the_engine_result_contract() -> None:
     for engine_key in (
         "result.capacity",
         "capacity.monthly_cost_usd",
+        "storage_throughput_gbps",
         "views.theoretical_accelerators",
         "views.derated_accelerators",
         "views.target_utilization_pct",
@@ -166,6 +170,13 @@ def test_renderer_understands_the_engine_result_contract() -> None:
         "commercial_band.monthly_range_usd",
     ):
         assert engine_key in script
+
+    for unsupported_override in (
+        "derating_factor_pct",
+        "monthly_hours",
+        "power_rate_per_kwh",
+    ):
+        assert unsupported_override not in script
 
 
 def test_layout_supports_keyboard_mobile_and_reduced_motion() -> None:

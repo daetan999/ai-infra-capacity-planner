@@ -71,6 +71,17 @@ class CapacityInputs(StrictModel):
             raise ValueError("assumption override names must not be blank")
         if len(normalized) != len(overrides):
             raise ValueError("assumption override names must be unique after trimming")
+        unsupported = set(normalized) - {"batch_size"}
+        if unsupported:
+            names = ", ".join(sorted(unsupported))
+            raise ValueError(f"unsupported assumption overrides: {names}")
+        batch_size = normalized.get("batch_size")
+        if batch_size is not None and (
+            isinstance(batch_size, bool)
+            or not isinstance(batch_size, (int, float))
+            or batch_size <= 0
+        ):
+            raise ValueError("batch_size must be a positive number")
         return normalized
 
 

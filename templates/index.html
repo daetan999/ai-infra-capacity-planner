@@ -214,26 +214,18 @@
               </div>
 
               <details class="assumption-drawer" id="assumption-editor">
-                <summary><span><strong>Assumption editor</strong><small>Hardware derating and commercial basis</small></span><span aria-hidden="true">＋</span></summary>
+                <summary><span><strong>Assumption editor</strong><small>Profile and batching basis</small></span><span aria-hidden="true">＋</span></summary>
                 <div class="assumption-grid">
                   <div class="field">
                     <label for="accelerator-profile">Illustrative accelerator</label>
                     <select id="accelerator-profile" name="accelerator_profile"><option value="illustrative-efficient">Profile A · efficiency optimized</option><option value="illustrative-balanced" selected>Profile B · balanced</option><option value="illustrative-memory-dense">Profile C · memory optimized</option></select>
                   </div>
                   <div class="field">
-                    <label for="derating-factor">Derating factor <span>%</span></label>
-                    <input id="derating-factor" name="derating_factor_pct" type="number" min="10" max="95" value="55">
-                  </div>
-                  <div class="field">
-                    <label for="monthly-hours">Monthly runtime <span>hours</span></label>
-                    <input id="monthly-hours" name="monthly_hours" type="number" min="1" max="744" value="730">
-                  </div>
-                  <div class="field">
-                    <label for="power-rate">Power rate <span>currency / kWh</span></label>
-                    <input id="power-rate" name="power_rate_per_kwh" type="number" min="0" step="0.01" value="0.14">
+                    <label for="batch-size">Representative batch size</label>
+                    <input id="batch-size" name="batch_size" type="number" min="1" step="1" value="8" required>
                   </div>
                 </div>
-                <p class="illustrative-note">Profiles and rates are illustrative. Derating, runtime, and power-rate values are stored as discussion inputs and do not alter deterministic engine outputs. Replace them with approved benchmark and commercial sources during validation.</p>
+                <p class="illustrative-note">The selected profile and batch size feed the deterministic model. Profile throughput, derating, power, and price values remain illustrative until representative benchmarks and approved commercial sources replace them.</p>
               </details>
 
               <div class="form-actions">
@@ -265,6 +257,7 @@
                   <article><span>CPU cores</span><strong id="result-cpu">—</strong></article>
                   <article><span>Memory</span><strong id="result-memory">—</strong></article>
                   <article><span>Storage</span><strong id="result-storage">—</strong></article>
+                  <article><span>Storage I/O</span><strong id="result-storage-throughput">—</strong></article>
                   <article><span>Network</span><strong id="result-network">—</strong></article>
                   <article><span>Racks</span><strong id="result-racks">—</strong></article>
                   <article><span>Power</span><strong id="result-power">—</strong></article>

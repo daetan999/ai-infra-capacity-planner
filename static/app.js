@@ -14,12 +14,9 @@
     "average_output_tokens", "tokens_per_day", "requests_per_second",
     "concurrency", "peak_factor", "latency_target_ms", "availability_target_pct",
     "dataset_tb", "training_window_hours", "storage_tb", "storage_growth_pct", "growth_pct",
-    "ingress_gbps", "egress_gbps", "target_utilization_pct", "derating_factor_pct",
-    "monthly_hours", "power_rate_per_kwh",
+    "ingress_gbps", "egress_gbps", "target_utilization_pct", "batch_size",
   ]);
-  const assumptionFields = new Set([
-    "accelerator_profile", "derating_factor_pct", "monthly_hours", "power_rate_per_kwh",
-  ]);
+  const assumptionFields = new Set(["batch_size"]);
   const textInputFields = new Set(["model_family", "precision", "region"]);
   const modeLabels = {
     llm_training: "LLM training",
@@ -216,6 +213,7 @@
     setText("result-cpu", pick(capacity, ["cpu_cores", "cpu", "cpu_range"]));
     setText("result-memory", pick(capacity, ["memory", "memory_gb", "memory_range"]));
     setText("result-storage", pick(capacity, ["storage", "storage_tb", "storage_range"]));
+    setText("result-storage-throughput", pick(capacity, ["storage_throughput_gbps"]));
     setText("result-network", pick(capacity, ["network", "network_gbps", "network_range"]));
     setText("result-racks", pick(capacity, ["racks", "rack_count", "rack_range"]));
     setText("result-power", pick(capacity, ["power", "power_kw", "power_range"]));
