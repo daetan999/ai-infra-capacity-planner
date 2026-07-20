@@ -118,6 +118,21 @@ def test_interactive_states_exports_and_comparison_have_accessible_hooks() -> No
     assert "AbortController" in script
 
 
+def test_renderer_understands_the_engine_result_contract() -> None:
+    script = read(SCRIPT)
+
+    for engine_key in (
+        "result.capacity",
+        "capacity.monthly_cost_usd",
+        "views.theoretical_accelerators",
+        "views.derated_accelerators",
+        "views.target_utilization_pct",
+        "confidence.missing_inputs",
+        "commercial_band.monthly_range_usd",
+    ):
+        assert engine_key in script
+
+
 def test_layout_supports_keyboard_mobile_and_reduced_motion() -> None:
     styles = read(STYLES)
 
