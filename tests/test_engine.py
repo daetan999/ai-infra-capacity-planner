@@ -246,3 +246,10 @@ def test_training_requires_a_nonzero_completion_window() -> None:
                 "training_window_hours": 0,
             }
         )
+
+
+def test_blank_required_text_is_reported_as_missing_evidence() -> None:
+    result = calculate_capacity({**BASE_INPUTS, "region": "   "})
+
+    assert "region" in result["confidence"]["missing_inputs"]
+    assert result["confidence"]["score"] < 100
