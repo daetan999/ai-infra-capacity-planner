@@ -15,7 +15,8 @@ COPY data ./data
 COPY templates ./templates
 COPY static ./static
 
-RUN pip install --no-cache-dir . && \
+RUN python -m pip install --no-cache-dir --upgrade pip && \
+    python -m pip install --no-cache-dir . && \
     mkdir -p /app/data && \
     chown -R planner:planner /app
 
