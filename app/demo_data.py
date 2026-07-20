@@ -3,7 +3,6 @@
 from copy import deepcopy
 from typing import Any
 
-
 DEMO_SCENARIOS: tuple[dict[str, Any], ...] = (
     {
         "name": "Fictional Atlas Pretraining Window",
