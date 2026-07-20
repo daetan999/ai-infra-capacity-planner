@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" role="img" aria-labelledby="title desc">
+  <title>Capacity sizing model</title>
+  <desc>The deterministic model transforms workload demand through hardware profiles and derating into capacity, commercial, and confidence outputs.</desc>
+  <defs><linearGradient id="modelbg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#090c0f"/><stop offset="1" stop-color="#14191d"/></linearGradient><filter id="modelglow"><feGaussianBlur stdDeviation="5"/></filter></defs>
+  <rect width="1200" height="560" fill="url(#modelbg)"/>
+  <path d="M48 78H1152M48 492H1152" stroke="#2c333b"/>
+  <text x="52" y="52" fill="#98a1aa" font-family="monospace" font-size="12" letter-spacing="3">DETERMINISTIC SIZING MODEL / TRANSPARENT ASSUMPTIONS</text>
+
+  <rect x="52" y="112" width="230" height="334" rx="7" fill="#101418" stroke="#323a43"/>
+  <text x="78" y="148" fill="#5be7d3" font-family="monospace" font-size="10" letter-spacing="2">01 / DEMAND</text>
+  <rect x="78" y="174" width="178" height="54" rx="4" fill="#171c21" stroke="#2d343c"/><rect x="78" y="240" width="178" height="54" rx="4" fill="#171c21" stroke="#2d343c"/><rect x="78" y="306" width="178" height="54" rx="4" fill="#171c21" stroke="#2d343c"/><rect x="78" y="372" width="178" height="46" rx="4" fill="#171c21" stroke="#2d343c"/>
+  <text x="94" y="196" fill="#77818c" font-family="monospace" font-size="9">COMPUTE PRESSURE</text><text x="94" y="215" fill="#f4f5f2" font-family="Arial, sans-serif" font-size="14">tokens × peak RPS</text>
+  <text x="94" y="262" fill="#77818c" font-family="monospace" font-size="9">MEMORY PRESSURE</text><text x="94" y="281" fill="#f4f5f2" font-family="Arial, sans-serif" font-size="14">weights + KV cache</text>
+  <text x="94" y="328" fill="#77818c" font-family="monospace" font-size="9">DATA PRESSURE</text><text x="94" y="347" fill="#f4f5f2" font-family="Arial, sans-serif" font-size="14">storage + network</text>
+  <text x="94" y="400" fill="#f4f5f2" font-family="Arial, sans-serif" font-size="14">latency · HA · growth</text>
+
+  <path d="M282 279H366" stroke="#5be7d3" stroke-width="2" stroke-dasharray="6 7"/>
+  <circle cx="324" cy="279" r="12" fill="#5be7d3" opacity=".15" filter="url(#modelglow)"/><circle cx="324" cy="279" r="5" fill="#5be7d3"/>
+
+  <path d="M366 112H718V446H366Z" fill="#11161a" stroke="#39424c"/>
+  <path d="M390 136H694V422H390Z" fill="none" stroke="#2d343c" stroke-dasharray="5 7"/>
+  <text x="414" y="174" fill="#d5ff52" font-family="monospace" font-size="10" letter-spacing="2">02 / MODEL CORE</text>
+  <circle cx="542" cy="275" r="92" fill="#d5ff52" opacity=".05" stroke="#d5ff52"/>
+  <circle cx="542" cy="275" r="64" fill="#0c100d" stroke="#5be7d3"/>
+  <circle cx="542" cy="275" r="34" fill="#171d12" stroke="#d5ff52"/>
+  <path d="M542 183V211M542 339V367M450 275H478M606 275H634" stroke="#5be7d3"/>
+  <path d="M477 210 497 230M587 320 607 340M477 340 497 320M587 230 607 210" stroke="#5be7d3"/>
+  <text x="510" y="272" fill="#d5ff52" font-family="monospace" font-size="10">PROFILE</text><text x="512" y="289" fill="#f4f5f2" font-family="monospace" font-size="11">× DERATE</text>
+  <text x="414" y="390" fill="#98a1aa" font-family="Arial, sans-serif" font-size="13">theoretical → derated → utilized</text>
+
+  <path d="M718 279H802" stroke="#d5ff52" stroke-width="2" stroke-dasharray="6 7"/>
+  <circle cx="760" cy="279" r="12" fill="#d5ff52" opacity=".15" filter="url(#modelglow)"/><circle cx="760" cy="279" r="5" fill="#d5ff52"/>
+
+  <rect x="802" y="112" width="350" height="334" rx="7" fill="#101418" stroke="#323a43"/>
+  <text x="828" y="148" fill="#ffca61" font-family="monospace" font-size="10" letter-spacing="2">03 / DECISION OUTPUTS</text>
+  <rect x="828" y="174" width="140" height="102" rx="4" fill="#171c21" stroke="#2d343c"/><rect x="982" y="174" width="144" height="102" rx="4" fill="#171c21" stroke="#2d343c"/>
+  <rect x="828" y="290" width="298" height="58" rx="4" fill="#0b0e11" stroke="#2d343c"/><rect x="828" y="362" width="298" height="56" rx="4" fill="#0b0e11" stroke="#2d343c"/>
+  <text x="844" y="200" fill="#77818c" font-family="monospace" font-size="8">CAPACITY</text><text x="844" y="230" fill="#d5ff52" font-family="monospace" font-size="19">LOW–HIGH</text><text x="844" y="252" fill="#98a1aa" font-family="Arial, sans-serif" font-size="11">infra envelope</text>
+  <text x="998" y="200" fill="#77818c" font-family="monospace" font-size="8">COMMERCIAL</text><text x="998" y="230" fill="#d5ff52" font-family="monospace" font-size="19">BAND</text><text x="998" y="252" fill="#98a1aa" font-family="Arial, sans-serif" font-size="11">monthly basis</text>
+  <text x="844" y="315" fill="#77818c" font-family="monospace" font-size="8">CONFIDENCE + MISSING INPUTS</text><path d="M844 330H1105" stroke="#343c45" stroke-width="6"/><path d="M844 330H1004" stroke="#ffca61" stroke-width="6"/>
+  <text x="844" y="386" fill="#77818c" font-family="monospace" font-size="8">EVIDENCE PLAN</text><text x="844" y="405" fill="#f4f5f2" font-family="Arial, sans-serif" font-size="13">questions · PoC · measurements</text>
+  <text x="52" y="526" fill="#98a1aa" font-family="Arial, sans-serif" font-size="13">Sensitivity levers:</text><text x="176" y="526" fill="#5be7d3" font-family="monospace" font-size="12">BATCHING</text><text x="290" y="526" fill="#5be7d3" font-family="monospace" font-size="12">QUANTIZATION</text><text x="442" y="526" fill="#5be7d3" font-family="monospace" font-size="12">GROWTH</text><text x="530" y="526" fill="#5be7d3" font-family="monospace" font-size="12">LATENCY</text>
+</svg>
