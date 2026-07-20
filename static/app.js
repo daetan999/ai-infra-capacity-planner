@@ -10,15 +10,17 @@
     markdown: "/export?format=markdown",
   };
   const numericFields = new Set([
-    "model_parameters_b", "context_length", "tokens_per_request", "requests_per_second",
+    "model_parameters_billions", "context_tokens", "tokens_per_request", "average_input_tokens",
+    "average_output_tokens", "tokens_per_day", "requests_per_second",
     "concurrency", "peak_factor", "latency_target_ms", "availability_target_pct",
-    "dataset_size_tb", "training_window_hours", "storage_required_tb", "monthly_growth_pct",
+    "dataset_tb", "training_window_hours", "storage_tb", "storage_growth_pct", "growth_pct",
     "ingress_gbps", "egress_gbps", "target_utilization_pct", "derating_factor_pct",
     "monthly_hours", "power_rate_per_kwh",
   ]);
   const assumptionFields = new Set([
     "accelerator_profile", "derating_factor_pct", "monthly_hours", "power_rate_per_kwh",
   ]);
+  const textInputFields = new Set(["model_family", "precision", "region"]);
   const modeLabels = {
     llm_training: "LLM training",
     llm_inference: "LLM inference",
@@ -78,7 +80,7 @@
         let detail = `Request failed (${response.status})`;
         try {
           const body = await response.json();
-          detail = body.detail || body.error || detail;
+          detail = body.detail || body.error?.message || body.error || detail;
         } catch (_error) {
           // The status code remains the useful error when a response has no JSON body.
         }
@@ -153,7 +155,7 @@
     if (value === undefined || value === null || value === "") return fallback;
     if (Array.isArray(value)) return value.map((item) => formatValue(item)).join("–");
     if (typeof value === "object") {
-      if (value.low !== undefined || value.high !== undefined) {
+      if (value.low !== undefined || value.high !== undefined || value.min !== undefined || value.max !== undefined) {
         const low = value.low ?? value.min ?? "?";
         const high = value.high ?? value.max ?? "?";
         return `${low}–${high}${value.unit ? ` ${value.unit}` : ""}`;
@@ -191,6 +193,12 @@
 
   function renderResult(scenario) {
     const result = scenarioResult(scenario);
+    const capacity = result.capacity || result;
+    const views = result.views || {};
+    const confidence = result.confidence || {};
+    const bottleneck = result.bottleneck || {};
+    const commercial_band = result.commercial_band || {};
+    const profile = result.profile || {};
     state.activeId = scenarioId(scenario);
     byId("workspace-mode").textContent = modeLabel(scenario);
     byId("workspace-title").textContent = scenario.name || "Capacity scenario";
@@ -199,30 +207,34 @@
     byId("export-json").disabled = false;
     byId("export-markdown").disabled = false;
 
-    const accelerators = pick(result, ["accelerators", "accelerator_count", "accelerator_range"]);
-    const cost = pick(result, ["monthly_cost", "monthly_cost_range", "cost"]);
+    const accelerators = pick(capacity, ["accelerators", "accelerator_count", "accelerator_range"]);
+    const cost = capacity.monthly_cost_usd || commercial_band.monthly_range_usd || pick(result, ["monthly_cost", "monthly_cost_range", "cost"]);
     setText("result-accelerators", accelerators);
-    setText("result-accelerators-range", pick(result, ["accelerator_note", "accelerator_profile"], "Illustrative profile"));
+    setText("result-accelerators-range", profile.name || profile.illustrative_name || pick(result, ["accelerator_note", "accelerator_profile"], "Illustrative profile"));
     setText("result-cost", cost);
-    setText("result-cost-range", pick(result, ["commercial_band", "cost_basis"], "Indicative monthly band"));
-    setText("result-cpu", pick(result, ["cpu_cores", "cpu", "cpu_range"]));
-    setText("result-memory", pick(result, ["memory", "memory_gb", "memory_range"]));
-    setText("result-storage", pick(result, ["storage", "storage_tb", "storage_range"]));
-    setText("result-network", pick(result, ["network", "network_gbps", "network_range"]));
-    setText("result-racks", pick(result, ["racks", "rack_count", "rack_range"]));
-    setText("result-power", pick(result, ["power", "power_kw", "power_range"]));
-    setText("result-theoretical", pick(result, ["theoretical", "theoretical_throughput"]));
-    setText("result-derated", pick(result, ["derated", "derated_throughput"]));
-    const utilization = pick(result, ["utilization", "utilization_pct"], "—");
+    setText("result-cost-range", commercial_band.label || pick(result, ["cost_basis"], "Indicative monthly band"));
+    setText("result-cpu", pick(capacity, ["cpu_cores", "cpu", "cpu_range"]));
+    setText("result-memory", pick(capacity, ["memory", "memory_gb", "memory_range"]));
+    setText("result-storage", pick(capacity, ["storage", "storage_tb", "storage_range"]));
+    setText("result-network", pick(capacity, ["network", "network_gbps", "network_range"]));
+    setText("result-racks", pick(capacity, ["racks", "rack_count", "rack_range"]));
+    setText("result-power", pick(capacity, ["power", "power_kw", "power_range"]));
+    setText("result-theoretical", views.theoretical_accelerators ?? pick(result, ["theoretical", "theoretical_throughput"]));
+    setText("result-derated", views.derated_accelerators ?? pick(result, ["derated", "derated_throughput"]));
+    const utilization = views.target_utilization_pct !== undefined
+      ? `${views.target_utilization_pct}% target`
+      : pick(result, ["utilization", "utilization_pct"], "—");
     setText("result-utilization", utilization);
     setText("result-utilization-detail", utilization);
-    setText("result-bottleneck", pick(result, ["bottleneck", "primary_bottleneck"], "Needs benchmark"));
-    setText("result-bottleneck-detail", pick(result, ["bottleneck_detail", "bottleneck_rationale"], "Validate the limiting resource under sustained peak demand."));
-    const confidence = pick(result, ["confidence", "confidence_level", "confidence_score"], "Indicative");
-    setText("result-confidence", confidence);
-    setText("result-confidence-detail", pick(result, ["confidence_detail", "confidence_rationale"], "Confidence improves as workload measurements replace planning assumptions."));
-    byId("result-confidence-chip").textContent = formatValue(confidence);
-    renderList("missing-inputs-list", pick(result, ["missing_inputs", "missing"], []), "No missing inputs reported");
+    setText("result-bottleneck", bottleneck.primary || pick(result, ["primary_bottleneck"], "Needs benchmark"));
+    setText("result-bottleneck-detail", bottleneck.reason || pick(result, ["bottleneck_detail", "bottleneck_rationale"], "Validate the limiting resource under sustained peak demand."));
+    const confidenceLabel = confidence.level
+      ? `${confidence.level} · ${confidence.score ?? "?"}/100`
+      : pick(result, ["confidence_level", "confidence_score"], "Indicative");
+    setText("result-confidence", confidenceLabel);
+    setText("result-confidence-detail", confidence.basis || pick(result, ["confidence_detail", "confidence_rationale"], "Confidence improves as workload measurements replace planning assumptions."));
+    byId("result-confidence-chip").textContent = formatValue(confidence.level || confidenceLabel);
+    renderList("missing-inputs-list", confidence.missing_inputs || pick(result, ["missing_inputs", "missing"], []), "No missing inputs reported");
     renderQuestions(pick(result, ["validation_questions", "questions", "benchmark_questions"], []));
     renderScenarioList(byId("scenario-filter").value);
   }
@@ -245,17 +257,21 @@
     const inputs = {};
     const assumptionOverrides = {};
     let name = "";
+    let description = "";
     let workloadMode = "";
     data.forEach((raw, key) => {
       const value = numericFields.has(key) ? Number(raw) : String(raw).trim();
       if (key === "name") name = value;
+      else if (key === "description") description = value;
       else if (key === "workload_mode") workloadMode = value;
       else if (key === "accelerator_profile") inputs[key] = value;
       else if (assumptionFields.has(key)) assumptionOverrides[key] = value;
-      else inputs[key] = value;
+      else if (numericFields.has(key) || textInputFields.has(key)) inputs[key] = value;
     });
     inputs.assumption_overrides = assumptionOverrides;
-    return { name, workload_mode: workloadMode, inputs };
+    const payload = { name, workload_mode: workloadMode, inputs };
+    if (description) payload.description = description;
+    return payload;
   }
 
   async function loadScenarios() {
@@ -310,10 +326,22 @@
     body.replaceChildren();
     const measures = [
       ["Scenario", (item) => item.name],
-      ["Accelerators", (item) => pick(scenarioResult(item), ["accelerators", "accelerator_count", "accelerator_range"])],
-      ["Monthly cost", (item) => pick(scenarioResult(item), ["monthly_cost", "monthly_cost_range", "cost"])],
-      ["Power", (item) => pick(scenarioResult(item), ["power", "power_kw", "power_range"])],
-      ["Confidence", (item) => pick(scenarioResult(item), ["confidence", "confidence_level", "confidence_score"])],
+      ["Accelerators", (item) => {
+        const result = scenarioResult(item);
+        return pick(result.capacity || result, ["accelerators", "accelerator_count", "accelerator_range"]);
+      }],
+      ["Monthly cost", (item) => {
+        const result = scenarioResult(item);
+        return result.capacity?.monthly_cost_usd || result.commercial_band?.monthly_range_usd || pick(result, ["monthly_cost", "monthly_cost_range", "cost"]);
+      }],
+      ["Power", (item) => {
+        const result = scenarioResult(item);
+        return pick(result.capacity || result, ["power", "power_kw", "power_range"]);
+      }],
+      ["Confidence", (item) => {
+        const result = scenarioResult(item);
+        return result.confidence?.level || pick(result, ["confidence_level", "confidence_score"]);
+      }],
     ];
     measures.forEach(([label, getValue]) => {
       const row = document.createElement("tr");

@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap");
-
 :root {
   color-scheme: dark;
   --bg: #090b0d;
@@ -18,7 +16,7 @@
   --danger: #ff806f;
   --radius: 6px;
   --shadow: 0 24px 80px rgb(0 0 0 / 28%);
-  font-family: "Manrope", system-ui, sans-serif;
+  font-family: "Avenir Next", "Segoe UI", system-ui, sans-serif;
   font-synthesis: none;
 }
 
@@ -136,11 +134,12 @@ main { width: 100%; max-width: 1540px; margin: 0 auto; padding: 38px clamp(20px,
 .field-wide { grid-column: 1 / -1; margin-bottom: 14px; }
 .field label { color: var(--muted-strong); font-size: .7rem; font-weight: 600; }
 .field label span { float: right; color: var(--muted); font: .6rem "DM Mono", monospace; font-weight: 400; }
-.field input, .field select { width: 100%; height: 40px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 4px; outline: none; background: #0b0e11; color: var(--text); font-size: .78rem; }
+.field input, .field select, .field textarea { width: 100%; min-height: 40px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 4px; outline: none; background: #0b0e11; color: var(--text); font-size: .78rem; }
+.field textarea { resize: vertical; line-height: 1.5; }
 .field input::placeholder { color: #606872; }
-.field input:hover, .field select:hover { border-color: var(--line-strong); }
-.field input:focus, .field select:focus { border-color: var(--signal); box-shadow: 0 0 0 2px rgb(213 255 82 / 12%); }
-.field input:user-invalid, .field select:user-invalid { border-color: var(--danger); }
+.field input:hover, .field select:hover, .field textarea:hover { border-color: var(--line-strong); }
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--signal); box-shadow: 0 0 0 2px rgb(213 255 82 / 12%); }
+.field input:user-invalid, .field select:user-invalid, .field textarea:user-invalid { border-color: var(--danger); }
 .field small { color: var(--muted); font-size: .64rem; }
 .field input[type="range"] { height: 24px; padding: 0; accent-color: var(--signal); }
 .form-section-heading { display: flex; align-items: center; gap: 12px; margin: 23px 0 14px; color: var(--muted); font: 500 .61rem "DM Mono", monospace; letter-spacing: .09em; text-transform: uppercase; }

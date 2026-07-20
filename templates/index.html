@@ -94,6 +94,10 @@
                 <input id="scenario-name" name="name" required maxlength="80" placeholder="e.g. Real-time support copilot">
                 <small>Use a business-readable workload name.</small>
               </div>
+              <div class="field field-wide">
+                <label for="scenario-description">Decision context <span>optional</span></label>
+                <textarea id="scenario-description" name="description" maxlength="500" rows="3" placeholder="What decision should this sizing range support?"></textarea>
+              </div>
 
               <div class="field field-wide">
                 <label for="workload-mode">Workload mode</label>
@@ -111,22 +115,38 @@
               </div>
               <div class="form-grid">
                 <div class="field">
+                  <label for="model-family">Model family</label>
+                  <input id="model-family" name="model_family" value="Decoder transformer" required>
+                </div>
+                <div class="field">
                   <label for="model-parameters">Model parameters <span>billions</span></label>
-                  <input id="model-parameters" name="model_parameters_b" type="number" min="0.1" step="0.1" value="70" required>
+                  <input id="model-parameters" name="model_parameters_billions" type="number" min="0.1" step="0.1" value="70" required>
                 </div>
                 <div class="field">
                   <label for="precision">Precision</label>
                   <select id="precision" name="precision">
-                    <option value="fp16">FP16</option><option value="bf16">BF16</option><option value="fp8">FP8</option><option value="int8">INT8</option><option value="int4">INT4</option>
+                    <option value="fp32">FP32</option><option value="fp16" selected>FP16</option><option value="bf16">BF16</option><option value="int8">INT8</option><option value="int4">INT4</option>
                   </select>
                 </div>
                 <div class="field">
                   <label for="context-length">Context length <span>tokens</span></label>
-                  <input id="context-length" name="context_length" type="number" min="128" step="128" value="8192" required>
+                  <input id="context-length" name="context_tokens" type="number" min="128" step="128" value="8192" required>
                 </div>
                 <div class="field">
                   <label for="tokens-per-request">Tokens / request</label>
                   <input id="tokens-per-request" name="tokens_per_request" type="number" min="1" value="1200" required>
+                </div>
+                <div class="field">
+                  <label for="average-input-tokens">Average input <span>tokens</span></label>
+                  <input id="average-input-tokens" name="average_input_tokens" type="number" min="0" value="900" required>
+                </div>
+                <div class="field">
+                  <label for="average-output-tokens">Average output <span>tokens</span></label>
+                  <input id="average-output-tokens" name="average_output_tokens" type="number" min="0" value="300" required>
+                </div>
+                <div class="field">
+                  <label for="tokens-per-day">Tokens / day</label>
+                  <input id="tokens-per-day" name="tokens_per_day" type="number" min="0" value="28000000">
                 </div>
                 <div class="field">
                   <label for="requests-per-second">Requests / second</label>
@@ -160,7 +180,7 @@
               <div class="form-grid">
                 <div class="field">
                   <label for="dataset-size">Dataset size <span>TB</span></label>
-                  <input id="dataset-size" name="dataset_size_tb" type="number" min="0" step="0.1" value="12">
+                  <input id="dataset-size" name="dataset_tb" type="number" min="0" step="0.1" value="12">
                 </div>
                 <div class="field">
                   <label for="training-window">Training window <span>hours</span></label>
@@ -168,11 +188,15 @@
                 </div>
                 <div class="field">
                   <label for="storage-required">Storage required <span>TB</span></label>
-                  <input id="storage-required" name="storage_required_tb" type="number" min="0" step="0.1" value="36" required>
+                  <input id="storage-required" name="storage_tb" type="number" min="0" step="0.1" value="36" required>
                 </div>
                 <div class="field">
-                  <label for="monthly-growth">Monthly growth <span>%</span></label>
-                  <input id="monthly-growth" name="monthly_growth_pct" type="number" min="0" step="0.1" value="12" required>
+                  <label for="monthly-growth">Storage growth <span>% monthly</span></label>
+                  <input id="monthly-growth" name="storage_growth_pct" type="number" min="0" step="0.1" value="12" required>
+                </div>
+                <div class="field">
+                  <label for="demand-growth">Demand growth <span>% planning horizon</span></label>
+                  <input id="demand-growth" name="growth_pct" type="number" min="0" step="0.1" value="20" required>
                 </div>
                 <div class="field">
                   <label for="ingress">Ingress <span>Gbps</span></label>
@@ -193,7 +217,7 @@
                 <div class="assumption-grid">
                   <div class="field">
                     <label for="accelerator-profile">Illustrative accelerator</label>
-                    <select id="accelerator-profile" name="accelerator_profile"><option value="profile-a">Profile A · high memory</option><option value="profile-b">Profile B · balanced</option><option value="profile-c">Profile C · efficient</option></select>
+                    <select id="accelerator-profile" name="accelerator_profile"><option value="illustrative-efficient">Profile A · efficiency optimized</option><option value="illustrative-balanced" selected>Profile B · balanced</option><option value="illustrative-memory-dense">Profile C · memory optimized</option></select>
                   </div>
                   <div class="field">
                     <label for="derating-factor">Derating factor <span>%</span></label>
@@ -208,7 +232,7 @@
                     <input id="power-rate" name="power_rate_per_kwh" type="number" min="0" step="0.01" value="0.14">
                   </div>
                 </div>
-                <p class="illustrative-note">Profiles and rates are illustrative. Replace them with approved benchmark and commercial sources.</p>
+                <p class="illustrative-note">Profiles and rates are illustrative. Derating, runtime, and power-rate values are stored as discussion inputs and do not alter deterministic engine outputs. Replace them with approved benchmark and commercial sources during validation.</p>
               </details>
 
               <div class="form-actions">
