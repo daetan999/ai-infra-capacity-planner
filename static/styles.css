@@ -93,7 +93,7 @@ svg { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: 
 .scenario-item { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; padding: 10px; border: 1px solid transparent; border-radius: var(--radius); cursor: pointer; }
 .scenario-item:hover, .scenario-item.is-active { border-color: var(--line); background: var(--surface); }
 .scenario-item.is-active { box-shadow: inset 2px 0 var(--signal); }
-.scenario-item button { display: block; width: 100%; padding: 0; border: 0; background: transparent; color: inherit; text-align: left; cursor: pointer; }
+.scenario-item button { display: block; width: 100%; min-width: 0; padding: 0; border: 0; background: transparent; color: inherit; text-align: left; cursor: pointer; }
 .scenario-item strong { display: block; overflow: hidden; font-size: .76rem; text-overflow: ellipsis; white-space: nowrap; }
 .scenario-item small { display: block; margin-top: 4px; color: var(--muted); font: .62rem "DM Mono", monospace; text-transform: uppercase; }
 .scenario-item input { accent-color: var(--signal); }

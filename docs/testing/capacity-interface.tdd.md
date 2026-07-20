@@ -41,6 +41,12 @@ The client accepts direct payloads or the repository's `{success, data, error}` 
 - `POST /api/scenarios/compare` accepts `{scenario_ids: [...]}`.
 - `GET /api/scenarios/{id}/export?format=json|markdown` returns a downloadable raw attachment.
 
-## Coverage and known gaps
+## Integrated browser evidence
 
-This owned slice has eight passing static interface contract tests and a passing JavaScript syntax check. Application-level coverage is measured by the integrated repository suite because these static assets do not add Python statements. Browser-level validation against the live FastAPI service remains an integration task after the API and sizing engine branches are combined; that run should exercise create, compare, failure recovery, exports, keyboard focus, and a narrow viewport.
+This slice has eight passing static interface contract tests and a passing JavaScript syntax check.
+The integrated browser run then loaded the three seeded scenarios, exposed a safe 422 validation
+state, created and calculated a fourth scenario, rendered the real engine result, compared two
+numeric scenario IDs, downloaded JSON and Markdown exports, and reloaded at 390 × 844 without
+horizontal document overflow. There were no page exceptions or unexpected failed responses.
+
+See [browser QA](browser-qa.md) for the executable journey and screenshot evidence.
