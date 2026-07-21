@@ -1,0 +1,60 @@
+profiles:
+  illustrative-efficient:
+    name: Illustrative Profile A — Efficiency optimized
+    memory_gb: 48
+    theoretical_throughput:
+      llm_training: 24
+      llm_inference: 82
+      rag_inference: 72
+      vision_inference: 110
+      batch_ai_hpc: 96
+    throughput_unit: normalized workload units per second
+    derating_factor: 0.58
+    power_watts:
+      min: 300
+      max: 500
+    monthly_price_usd:
+      min: 850
+      max: 1400
+    price_source_type: illustrative planning placeholder
+    illustrative: true
+
+  illustrative-balanced:
+    name: Illustrative Profile B — Balanced
+    memory_gb: 80
+    theoretical_throughput:
+      llm_training: 36
+      llm_inference: 120
+      rag_inference: 104
+      vision_inference: 155
+      batch_ai_hpc: 142
+    throughput_unit: normalized workload units per second
+    derating_factor: 0.62
+    power_watts:
+      min: 500
+      max: 750
+    monthly_price_usd:
+      min: 1400
+      max: 2200
+    price_source_type: illustrative planning placeholder
+    illustrative: true
+
+  illustrative-memory-dense:
+    name: Illustrative Profile C — Memory optimized
+    memory_gb: 144
+    theoretical_throughput:
+      llm_training: 48
+      llm_inference: 138
+      rag_inference: 126
+      vision_inference: 166
+      batch_ai_hpc: 172
+    throughput_unit: normalized workload units per second
+    derating_factor: 0.66
+    power_watts:
+      min: 650
+      max: 950
+    monthly_price_usd:
+      min: 2300
+      max: 3600
+    price_source_type: illustrative planning placeholder
+    illustrative: true

@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Deterministic first-pass AI infrastructure capacity and commercial sizing.">
+    <title>Capacity Planner · Enterprise AI Infrastructure</title>
+    <link rel="icon" href="{{ url_for('static', path='favicon.svg') }}" type="image/svg+xml">
+    <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}">
+    <script src="{{ url_for('static', path='app.js') }}" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to planning workspace</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Capacity Planner home">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>
+          <strong>Capacity Planner</strong>
+          <small>Enterprise AI infrastructure</small>
+        </span>
+      </a>
+      <div class="topbar-meta">
+        <span class="environment"><i aria-hidden="true"></i> Indicative model</span>
+        <button class="icon-button" type="button" id="refresh-scenarios" aria-label="Refresh scenarios" title="Refresh scenarios">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="app-shell">
+      <aside class="scenario-rail" aria-label="Scenario navigation">
+        <div class="rail-heading">
+          <div>
+            <p class="eyebrow">Portfolio</p>
+            <h2>Scenarios</h2>
+          </div>
+          <span class="count-badge" id="scenario-count">0</span>
+        </div>
+        <button class="button button-primary button-full" id="new-scenario" type="button">
+          <span aria-hidden="true">＋</span> New scenario
+        </button>
+        <div class="rail-filter">
+          <label class="sr-only" for="scenario-filter">Filter scenarios</label>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>
+          <input id="scenario-filter" type="search" placeholder="Filter scenarios">
+        </div>
+        <nav aria-label="Saved scenarios">
+          <ul class="scenario-list" id="scenario-list"></ul>
+          <p class="rail-empty" id="scenario-list-empty">No saved scenarios yet.</p>
+        </nav>
+        <div class="rail-note">
+          <span class="note-icon" aria-hidden="true">i</span>
+          <p><strong>Decision support</strong><br>Ranges require benchmark validation before procurement.</p>
+        </div>
+      </aside>
+
+      <main id="main-content" tabindex="-1">
+        <section class="workspace-heading" aria-labelledby="workspace-title">
+          <div>
+            <p class="eyebrow">Sizing workspace <span aria-hidden="true">/</span> <span id="workspace-mode">New model</span></p>
+            <h1 id="workspace-title">Build a capacity scenario</h1>
+            <p>Translate workload demand into transparent infrastructure and commercial ranges.</p>
+          </div>
+          <div class="heading-actions">
+            <button class="button button-quiet" id="export-json" type="button" disabled>Export JSON</button>
+            <button class="button button-quiet" id="export-markdown" type="button" disabled>Export brief</button>
+          </div>
+        </section>
+
+        <div class="notice notice-caution" role="note">
+          <span aria-hidden="true">◇</span>
+          <p><strong>First-pass planning model.</strong> Every result is an Indicative range, not a final vendor quote. Validate hardware, software, latency and utilization assumptions in a controlled benchmark.</p>
+        </div>
+
+        <div class="request-states" aria-atomic="true">
+          <p id="loading-state" class="request-state" role="status" aria-live="polite" hidden><span class="spinner" aria-hidden="true"></span> Calculating scenario…</p>
+          <p id="success-state" class="request-state state-success" role="status" aria-live="polite" hidden></p>
+          <p id="error-state" class="request-state state-error" role="alert" aria-live="assertive" hidden></p>
+        </div>
+
+        <div class="workspace-grid">
+          <section class="panel input-panel" aria-labelledby="inputs-title">
+            <div class="panel-header">
+              <div>
+                <p class="step-label">01 · Demand profile</p>
+                <h2 id="inputs-title">Scenario inputs</h2>
+              </div>
+              <span class="status-chip">Editable</span>
+            </div>
+
+            <form id="scenario-form" novalidate>
+              <div class="field field-wide">
+                <label for="scenario-name">Scenario name</label>
+                <input id="scenario-name" name="name" required maxlength="80" placeholder="e.g. Real-time support copilot">
+                <small>Use a business-readable workload name.</small>
+              </div>
+              <div class="field field-wide">
+                <label for="scenario-description">Decision context <span>optional</span></label>
+                <textarea id="scenario-description" name="description" maxlength="500" rows="3" placeholder="What decision should this sizing range support?"></textarea>
+              </div>
+
+              <div class="field field-wide">
+                <label for="workload-mode">Workload mode</label>
+                <select id="workload-mode" name="workload_mode" required>
+                  <option value="llm_inference">LLM inference</option>
+                  <option value="rag_inference">RAG inference</option>
+                  <option value="llm_training">LLM training</option>
+                  <option value="vision_inference">Vision inference</option>
+                  <option value="batch_ai_hpc">Batch AI / HPC</option>
+                </select>
+              </div>
+
+              <div class="form-section-heading">
+                <span>Model &amp; service</span><span></span>
+              </div>
+              <div class="form-grid">
+                <div class="field">
+                  <label for="model-family">Model family</label>
+                  <input id="model-family" name="model_family" value="Decoder transformer" required>
+                </div>
+                <div class="field">
+                  <label for="model-parameters">Model parameters <span>billions</span></label>
+                  <input id="model-parameters" name="model_parameters_billions" type="number" min="0.1" step="0.1" value="70" required>
+                </div>
+                <div class="field">
+                  <label for="precision">Precision</label>
+                  <select id="precision" name="precision">
+                    <option value="fp32">FP32</option><option value="fp16" selected>FP16</option><option value="bf16">BF16</option><option value="int8">INT8</option><option value="int4">INT4</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="context-length">Context length <span>tokens</span></label>
+                  <input id="context-length" name="context_tokens" type="number" min="128" step="128" value="8192" required>
+                </div>
+                <div class="field">
+                  <label for="tokens-per-request">Tokens / request</label>
+                  <input id="tokens-per-request" name="tokens_per_request" type="number" min="1" value="1200" required>
+                </div>
+                <div class="field">
+                  <label for="average-input-tokens">Average input <span>tokens</span></label>
+                  <input id="average-input-tokens" name="average_input_tokens" type="number" min="0" value="900" required>
+                </div>
+                <div class="field">
+                  <label for="average-output-tokens">Average output <span>tokens</span></label>
+                  <input id="average-output-tokens" name="average_output_tokens" type="number" min="0" value="300" required>
+                </div>
+                <div class="field">
+                  <label for="tokens-per-day">Tokens / day</label>
+                  <input id="tokens-per-day" name="tokens_per_day" type="number" min="0" value="28000000">
+                </div>
+                <div class="field">
+                  <label for="requests-per-second">Requests / second</label>
+                  <input id="requests-per-second" name="requests_per_second" type="number" min="0.1" step="0.1" value="18" required>
+                </div>
+                <div class="field">
+                  <label for="concurrency">Concurrency</label>
+                  <input id="concurrency" name="concurrency" type="number" min="1" value="80" required>
+                </div>
+                <div class="field">
+                  <label for="peak-factor">Peak factor <span>× average</span></label>
+                  <input id="peak-factor" name="peak_factor" type="number" min="1" step="0.1" value="1.8" required>
+                </div>
+                <div class="field">
+                  <label for="latency-target">Latency target <span>ms</span></label>
+                  <input id="latency-target" name="latency_target_ms" type="number" min="1" value="800" required>
+                </div>
+                <div class="field">
+                  <label for="availability-target">Availability target <span>%</span></label>
+                  <input id="availability-target" name="availability_target_pct" type="number" min="90" max="99.999" step="0.001" value="99.9" required>
+                </div>
+                <div class="field">
+                  <label for="region">Region</label>
+                  <input id="region" name="region" value="Primary region" required>
+                </div>
+              </div>
+
+              <div class="form-section-heading">
+                <span>Data &amp; facilities</span><span></span>
+              </div>
+              <div class="form-grid">
+                <div class="field">
+                  <label for="dataset-size">Dataset size <span>TB</span></label>
+                  <input id="dataset-size" name="dataset_tb" type="number" min="0" step="0.1" value="12">
+                </div>
+                <div class="field">
+                  <label for="training-window">Training window <span>hours</span></label>
+                  <input id="training-window" name="training_window_hours" type="number" min="0" step="0.5" value="0">
+                </div>
+                <div class="field">
+                  <label for="storage-required">Storage required <span>TB</span></label>
+                  <input id="storage-required" name="storage_tb" type="number" min="0" step="0.1" value="36" required>
+                </div>
+                <div class="field">
+                  <label for="monthly-growth">Storage growth <span>% monthly</span></label>
+                  <input id="monthly-growth" name="storage_growth_pct" type="number" min="0" step="0.1" value="12" required>
+                </div>
+                <div class="field">
+                  <label for="demand-growth">Demand growth <span>% planning horizon</span></label>
+                  <input id="demand-growth" name="growth_pct" type="number" min="0" step="0.1" value="20" required>
+                </div>
+                <div class="field">
+                  <label for="ingress">Ingress <span>Gbps</span></label>
+                  <input id="ingress" name="ingress_gbps" type="number" min="0" step="0.1" value="4" required>
+                </div>
+                <div class="field">
+                  <label for="egress">Egress <span>Gbps</span></label>
+                  <input id="egress" name="egress_gbps" type="number" min="0" step="0.1" value="8" required>
+                </div>
+                <div class="field field-wide">
+                  <label for="target-utilization">Target utilization <span id="target-utilization-value">65%</span></label>
+                  <input id="target-utilization" name="target_utilization_pct" type="range" min="30" max="90" value="65">
+                </div>
+              </div>
+
+              <details class="assumption-drawer" id="assumption-editor">
+                <summary><span><strong>Assumption editor</strong><small>Profile and batching basis</small></span><span aria-hidden="true">＋</span></summary>
+                <div class="assumption-grid">
+                  <div class="field">
+                    <label for="accelerator-profile">Illustrative accelerator</label>
+                    <select id="accelerator-profile" name="accelerator_profile"><option value="illustrative-efficient">Profile A · efficiency optimized</option><option value="illustrative-balanced" selected>Profile B · balanced</option><option value="illustrative-memory-dense">Profile C · memory optimized</option></select>
+                  </div>
+                  <div class="field">
+                    <label for="batch-size">Representative batch size</label>
+                    <input id="batch-size" name="batch_size" type="number" min="1" step="1" value="8" required>
+                  </div>
+                </div>
+                <p class="illustrative-note">The selected profile and batch size feed the deterministic model. Profile throughput, derating, power, and price values remain illustrative until representative benchmarks and approved commercial sources replace them.</p>
+              </details>
+
+              <div class="form-actions">
+                <button class="button button-primary" type="submit">Calculate &amp; save scenario <span aria-hidden="true">→</span></button>
+                <button class="button button-quiet" id="reset-form" type="reset">Reset</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="results-column" aria-label="Sizing results">
+            <section class="panel results-panel" id="results-panel" aria-labelledby="results-title">
+              <div class="panel-header">
+                <div><p class="step-label">02 · Capacity envelope</p><h2 id="results-title">Indicative range</h2></div>
+                <span class="status-chip chip-muted" id="result-confidence-chip">Not calculated</span>
+              </div>
+
+              <div class="empty-state" id="empty-state">
+                <div class="empty-visual" aria-hidden="true"><span></span><span></span><span></span></div>
+                <h3>Ready for a demand profile</h3>
+                <p>Complete the inputs to expose capacity, confidence and validation work.</p>
+              </div>
+
+              <div id="result-content" hidden>
+                <div class="primary-metrics">
+                  <article><span>Accelerators</span><strong id="result-accelerators">—</strong><small id="result-accelerators-range">—</small></article>
+                  <article><span>Monthly cost</span><strong id="result-cost">—</strong><small id="result-cost-range">—</small></article>
+                </div>
+                <div class="metric-grid">
+                  <article><span>CPU cores</span><strong id="result-cpu">—</strong></article>
+                  <article><span>Memory</span><strong id="result-memory">—</strong></article>
+                  <article><span>Storage</span><strong id="result-storage">—</strong></article>
+                  <article><span>Storage I/O</span><strong id="result-storage-throughput">—</strong></article>
+                  <article><span>Network</span><strong id="result-network">—</strong></article>
+                  <article><span>Racks</span><strong id="result-racks">—</strong></article>
+                  <article><span>Power</span><strong id="result-power">—</strong></article>
+                </div>
+                <div class="throughput-card">
+                  <div class="card-heading"><div><span class="micro-label">Throughput bridge</span><h3>Theoretical → Derated → Utilization</h3></div><strong id="result-utilization">—</strong></div>
+                  <div class="bridge-track" aria-hidden="true"><span class="bridge-theoretical"></span><span class="bridge-derated"></span><span class="bridge-utilization"></span></div>
+                  <dl><div><dt>Theoretical</dt><dd id="result-theoretical">—</dd></div><div><dt>Derated</dt><dd id="result-derated">—</dd></div><div><dt>Utilization</dt><dd id="result-utilization-detail">—</dd></div></dl>
+                </div>
+                <div class="finding-grid">
+                  <article><span class="micro-label">Bottleneck</span><h3 id="result-bottleneck">—</h3><p id="result-bottleneck-detail">—</p></article>
+                  <article><span class="micro-label">Confidence</span><h3 id="result-confidence">—</h3><p id="result-confidence-detail">—</p></article>
+                </div>
+                <article class="missing-card">
+                  <div><span class="micro-label">Missing inputs</span><h3>Resolve before commercial commitment</h3></div>
+                  <ul id="missing-inputs-list"></ul>
+                </article>
+              </div>
+            </section>
+
+            <section class="panel validation-panel" id="validation-questions" aria-labelledby="validation-title">
+              <div class="panel-header"><div><p class="step-label">03 · Evidence plan</p><h2 id="validation-title">Validation questions</h2></div><span class="status-chip chip-caution">Requires benchmark validation</span></div>
+              <ol id="validation-question-list">
+                <li>What sustained throughput is observed at the target context and batch size?</li>
+                <li>Which p95 latency boundary applies during the stated peak factor?</li>
+                <li>What failover headroom is reserved for the availability target?</li>
+              </ol>
+            </section>
+
+            <section class="panel comparison-panel" id="comparison-panel" aria-labelledby="comparison-title">
+              <div class="panel-header"><div><p class="step-label">04 · Trade-off review</p><h2 id="comparison-title">Scenario comparison</h2></div><button class="button button-quiet button-small" id="compare-scenarios" type="button">Compare selected</button></div>
+              <p class="comparison-help">Select two or three scenarios from the portfolio to compare capacity and commercial bands.</p>
+              <div class="table-wrap" tabindex="0" aria-label="Scenario comparison table">
+                <table><thead id="comparison-head"><tr><th scope="col">Measure</th><th scope="col">Scenario A</th><th scope="col">Scenario B</th></tr></thead><tbody id="comparison-body"><tr><th scope="row">Selection</th><td colspan="2">No comparison loaded</td></tr></tbody></table>
+              </div>
+            </section>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <noscript><div class="noscript">JavaScript is required to calculate, compare and export scenarios. The form remains readable for planning review.</div></noscript>
+  </body>
+</html>

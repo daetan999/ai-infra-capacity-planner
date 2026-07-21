@@ -1,0 +1,40 @@
+from app.demo_data import DEMO_SCENARIOS, fresh_demo_scenarios
+from app.engine import calculate_capacity
+
+
+def test_demo_scenarios_cover_required_fictional_workloads() -> None:
+    assert len(DEMO_SCENARIOS) == 3
+    assert {scenario["workload_mode"] for scenario in DEMO_SCENARIOS} == {
+        "llm_training",
+        "llm_inference",
+        "rag_inference",
+    }
+    assert all("fictional" in scenario["description"].lower() for scenario in DEMO_SCENARIOS)
+
+
+def test_demo_scenarios_include_commercial_sizing_inputs() -> None:
+    required = {
+        "model_family",
+        "model_parameters_billions",
+        "precision",
+        "region",
+        "target_utilization_pct",
+        "growth_pct",
+        "assumption_overrides",
+    }
+
+    for scenario in DEMO_SCENARIOS:
+        assert required <= scenario["inputs"].keys()
+        assert scenario["name"]
+        assert scenario["inputs"]["region"].startswith("fictional-")
+
+
+def test_every_demo_scenario_produces_a_runnable_indicative_range() -> None:
+    for scenario in fresh_demo_scenarios():
+        result = calculate_capacity(
+            {"workload_mode": scenario["workload_mode"], **scenario["inputs"]}
+        )
+
+        assert result["profile"]["illustrative"] is True
+        assert result["capacity"]["accelerators"]["min"] > 0
+        assert "not a vendor quote" in result["commercial_band"]["caveat"].lower()
