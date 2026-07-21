@@ -186,4 +186,4 @@ Released under the [MIT License](LICENSE).
 
 ---
 
-Part of the Enterprise AI Infrastructure Portfolio.
+[Part of the Enterprise AI Infrastructure Portfolio](https://github.com/daetan999/technical_resume)
