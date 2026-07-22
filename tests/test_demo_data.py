@@ -38,3 +38,18 @@ def test_every_demo_scenario_produces_a_runnable_indicative_range() -> None:
         assert result["profile"]["illustrative"] is True
         assert result["capacity"]["accelerators"]["min"] > 0
         assert "not a vendor quote" in result["commercial_band"]["caveat"].lower()
+
+
+def test_northstar_demo_matches_the_portfolio_case_contract() -> None:
+    northstar = next(
+        scenario for scenario in DEMO_SCENARIOS if "Northstar" in scenario["name"]
+    )
+
+    assert northstar["name"] == "Fictional Northstar Private RAG"
+    assert northstar["workload_mode"] == "rag_inference"
+    assert northstar["inputs"]["model_parameters_billions"] == 70
+    assert northstar["inputs"]["requests_per_second"] == 45
+    assert northstar["inputs"]["peak_factor"] == 1.0
+    assert northstar["inputs"]["latency_target_ms"] == 900
+    assert northstar["inputs"]["dataset_tb"] == 18
+    assert northstar["inputs"]["growth_pct"] == 35
