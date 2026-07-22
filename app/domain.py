@@ -68,6 +68,10 @@ class AcceleratorProfile:
     monthly_price_usd_max: float
     price_source_type: str
     illustrative: bool
+    calibration_status: str
+    evidence_reference: str
+    measurement_scope: str
+    limitations: str
 
     @classmethod
     def from_mapping(cls, profile_id: str, values: Mapping[str, Any]) -> AcceleratorProfile:
@@ -96,6 +100,10 @@ class AcceleratorProfile:
             monthly_price_usd_max=float(monthly_price["max"]),
             price_source_type=str(values["price_source_type"]),
             illustrative=bool(values["illustrative"]),
+            calibration_status=str(values["calibration_status"]),
+            evidence_reference=str(values["evidence_reference"]),
+            measurement_scope=str(values["measurement_scope"]),
+            limitations=str(values["limitations"]),
         )
         profile.validate()
         return profile
@@ -103,6 +111,13 @@ class AcceleratorProfile:
     def validate(self) -> None:
         if not self.profile_id.startswith("illustrative-") or not self.illustrative:
             raise ValueError("Accelerator profiles must be explicitly illustrative")
+        if self.calibration_status not in {"illustrative", "benchmark_anchored"}:
+            raise ValueError(
+                f"Profile {self.profile_id} calibration_status must be illustrative or "
+                "benchmark_anchored"
+            )
+        if not all((self.evidence_reference, self.measurement_scope, self.limitations)):
+            raise ValueError(f"Profile {self.profile_id} must document its evidence boundary")
         if self.memory_gb <= 0:
             raise ValueError(f"Profile {self.profile_id} memory_gb must be positive")
         if not 0 < self.derating_factor < 1:
@@ -120,6 +135,10 @@ class AcceleratorProfile:
             "throughput_unit": self.throughput_unit,
             "illustrative": self.illustrative,
             "price_source_type": self.price_source_type,
+            "calibration_status": self.calibration_status,
+            "evidence_reference": self.evidence_reference,
+            "measurement_scope": self.measurement_scope,
+            "limitations": self.limitations,
         }
 
 

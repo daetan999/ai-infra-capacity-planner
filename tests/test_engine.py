@@ -47,6 +47,10 @@ def test_profiles_are_vendor_neutral_and_explicitly_illustrative() -> None:
         assert 0 < profile.power_watts_min <= profile.power_watts_max
         assert profile.monthly_price_usd_min <= profile.monthly_price_usd_max
         assert profile.price_source_type == "illustrative planning placeholder"
+        assert profile.calibration_status == "illustrative"
+        assert profile.evidence_reference
+        assert profile.measurement_scope
+        assert profile.limitations
 
 
 def test_calculation_is_deterministic_and_json_friendly() -> None:
@@ -57,6 +61,15 @@ def test_calculation_is_deterministic_and_json_friendly() -> None:
     assert first["mode"] == "llm_inference"
     assert first["profile"]["id"] == "illustrative-balanced"
     assert first["profile"]["illustrative"] is True
+    assert first["profile"]["calibration_status"] == "illustrative"
+    assert first["profile"]["evidence_reference"]
+    assert first["profile"]["measurement_scope"]
+    assert first["profile"]["limitations"]
+    assert first["planning_status"] == (
+        "Planning status: illustrative. A Solutions Engineer must validate this range against "
+        "a representative workload, supported hardware, current commercial terms, and the "
+        "target operating environment."
+    )
     assert isinstance(first["benchmark_assumptions"], list)
     assert isinstance(first["validation_questions"], list)
 

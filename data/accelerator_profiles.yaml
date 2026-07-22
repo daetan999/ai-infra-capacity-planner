@@ -18,6 +18,10 @@ profiles:
       max: 1400
     price_source_type: illustrative planning placeholder
     illustrative: true
+    calibration_status: illustrative
+    evidence_reference: Internal normalized planning model; no public benchmark applied
+    measurement_scope: Generic workload-unit planning across five workload modes
+    limitations: Not comparable to vendor throughput, customer workload traces, or current commercial terms
 
   illustrative-balanced:
     name: Illustrative Profile B — Balanced
@@ -38,6 +42,10 @@ profiles:
       max: 2200
     price_source_type: illustrative planning placeholder
     illustrative: true
+    calibration_status: illustrative
+    evidence_reference: Internal normalized planning model; no public benchmark applied
+    measurement_scope: Generic workload-unit planning across five workload modes
+    limitations: Not comparable to vendor throughput, customer workload traces, or current commercial terms
 
   illustrative-memory-dense:
     name: Illustrative Profile C — Memory optimized
@@ -58,3 +66,7 @@ profiles:
       max: 3600
     price_source_type: illustrative planning placeholder
     illustrative: true
+    calibration_status: illustrative
+    evidence_reference: Internal normalized planning model; no public benchmark applied
+    measurement_scope: Generic workload-unit planning across five workload modes
+    limitations: Not comparable to vendor throughput, customer workload traces, or current commercial terms

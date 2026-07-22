@@ -234,6 +234,7 @@ def _safe_slug(name: str) -> str:
 def _markdown_export(projection: Mapping[str, Any]) -> str:
     inputs = projection["inputs"]
     result = projection["result"]
+    profile = result.get("profile", {})
     lines = [
         f"# Capacity sizing: {projection['name']}",
         "",
@@ -242,6 +243,11 @@ def _markdown_export(projection: Mapping[str, Any]) -> str:
         "",
         f"- **Workload mode:** `{projection['workload_mode']}`",
         f"- **Region:** `{inputs.get('region', 'not supplied')}`",
+        f"- **Planning status:** {result.get('planning_status', 'Unavailable')}",
+        f"- **Profile calibration:** `{profile.get('calibration_status', 'Unavailable')}`",
+        f"- **Evidence reference:** {profile.get('evidence_reference', 'Unavailable')}",
+        f"- **Measurement scope:** {profile.get('measurement_scope', 'Unavailable')}",
+        f"- **Profile limitations:** {profile.get('limitations', 'Unavailable')}",
         f"- **Updated:** `{projection['updated_at']}`",
         "",
         "## Inputs",

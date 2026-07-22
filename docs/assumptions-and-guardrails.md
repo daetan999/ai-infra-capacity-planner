@@ -20,6 +20,9 @@ precision support, observed tokens or samples per second, regional availability,
 storage class, data locality, ingress/egress terms, and current supplier pricing. Re-run the planner
 with measured values and record the benchmark date and environment.
 
+See [Calibration Method](calibration-method.md) for the evidence-matching procedure and a worked
+example that remains illustrative because the public benchmark does not match the scenario.
+
 ## Safe demo data
 
 Bundled scenarios are fictional. They contain no customer names, credentials, proprietary pricing,

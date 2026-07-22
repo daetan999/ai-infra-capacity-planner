@@ -190,6 +190,11 @@ def test_json_and_markdown_exports_are_deterministic(client: TestClient) -> None
     assert "## Inputs" in first_markdown.text
     assert "## Indicative result" in first_markdown.text
     assert "first-pass indicative range" in first_markdown.text.lower()
+    assert "- **Planning status:** Unavailable" in first_markdown.text
+    assert "- **Profile calibration:** `Unavailable`" in first_markdown.text
+    assert "- **Evidence reference:** Unavailable" in first_markdown.text
+    assert "- **Measurement scope:** Unavailable" in first_markdown.text
+    assert "- **Profile limitations:** Unavailable" in first_markdown.text
 
 
 def test_validation_and_not_found_errors_use_safe_envelopes(client: TestClient) -> None:
