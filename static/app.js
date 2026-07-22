@@ -210,6 +210,11 @@
     setText("result-accelerators-range", profile.name || profile.illustrative_name || pick(result, ["accelerator_note", "accelerator_profile"], "Illustrative profile"));
     setText("result-cost", cost);
     setText("result-cost-range", commercial_band.label || pick(result, ["cost_basis"], "Indicative monthly band"));
+    setText("result-planning-status", result.planning_status || "Planning status unavailable");
+    setText("result-calibration-status", profile.calibration_status || "illustrative");
+    setText("result-evidence-reference", profile.evidence_reference || "No evidence reference recorded");
+    setText("result-measurement-scope", profile.measurement_scope || "No measurement scope recorded");
+    setText("result-profile-limitations", profile.limitations || "Requires representative validation");
     setText("result-cpu", pick(capacity, ["cpu_cores", "cpu", "cpu_range"]));
     setText("result-memory", pick(capacity, ["memory", "memory_gb", "memory_range"]));
     setText("result-storage", pick(capacity, ["storage", "storage_tb", "storage_range"]));
@@ -357,6 +362,7 @@
         const result = scenarioResult(item);
         return result.confidence?.level || pick(result, ["confidence_level", "confidence_score"]);
       }],
+      ["Calibration", (item) => scenarioResult(item).profile?.calibration_status || "Unavailable"],
     ];
     measures.forEach(([label, getValue]) => {
       const row = document.createElement("tr");

@@ -17,6 +17,11 @@ import yaml
 from app.domain import AcceleratorProfile, SizingInputs, WorkloadMode
 
 DEFAULT_PROFILES_PATH = Path(__file__).resolve().parents[1] / "data" / "accelerator_profiles.yaml"
+ILLUSTRATIVE_PLANNING_STATUS = (
+    "Planning status: illustrative. A Solutions Engineer must validate this range against a "
+    "representative workload, supported hardware, current commercial terms, and the target "
+    "operating environment."
+)
 
 
 def load_accelerator_profiles(
@@ -62,6 +67,7 @@ def calculate_capacity(
     return {
         "mode": sizing.mode.value,
         "profile": profile.public_dict(),
+        "planning_status": ILLUSTRATIVE_PLANNING_STATUS,
         "capacity": capacity,
         "views": _views(sizing, profile, estimate),
         "bottleneck": _bottleneck(sizing, estimate),

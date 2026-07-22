@@ -50,6 +50,8 @@ def test_scenario_flows_from_validated_input_to_report(tmp_path: Path) -> None:
         result = scenario["result"]
         assert result["mode"] == "llm_inference"
         assert result["profile"]["illustrative"] is True
+        assert result["profile"]["calibration_status"] == "illustrative"
+        assert result["planning_status"].startswith("Planning status: illustrative")
         assert result["capacity"]["accelerators"]["min"] > 0
         assert result["capacity"]["monthly_cost_usd"]["max"] > 0
         assert 0 <= result["confidence"]["score"] <= 100
@@ -64,3 +66,8 @@ def test_scenario_flows_from_validated_input_to_report(tmp_path: Path) -> None:
         assert report.status_code == 200
         assert "Fictional integration assistant" in report.text
         assert "first-pass indicative range" in report.text.lower()
+        assert "Planning status: illustrative" in report.text
+        assert '"calibration_status": "illustrative"' in report.text
+        assert "Internal normalized planning model" in report.text
+        assert "Generic workload-unit planning" in report.text
+        assert "Not comparable to vendor throughput" in report.text

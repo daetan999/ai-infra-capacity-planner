@@ -119,6 +119,10 @@ def test_results_make_estimates_and_uncertainty_visible() -> None:
         "Bottleneck",
         "Confidence",
         "Missing inputs",
+        "Planning status",
+        "Evidence reference",
+        "Measurement scope",
+        "Limitations",
     ):
         assert result in html
 
@@ -168,6 +172,11 @@ def test_renderer_understands_the_engine_result_contract() -> None:
         "views.target_utilization_pct",
         "confidence.missing_inputs",
         "commercial_band.monthly_range_usd",
+        "result.planning_status",
+        "profile.calibration_status",
+        "profile.evidence_reference",
+        "profile.measurement_scope",
+        "profile.limitations",
     ):
         assert engine_key in script
 

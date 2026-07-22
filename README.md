@@ -89,6 +89,12 @@ measurement plan, and indicative commercial opportunity band.
 - **Change analysis:** makes growth, batching, precision, and latency trade-offs visible before a
   design hardens.
 
+## Design Decisions
+
+- **Return ranges instead of a bill of materials.** Early discovery cannot support topology-level precision. The planner trades a definitive answer for visible uncertainty; representative benchmarks and an SE-reviewed design can replace the range.
+- **Keep profiles generic and carry their provenance.** This avoids presenting vendor claims or placeholder prices as current evidence. Generic profiles limit procurement usefulness; a workload-comparable benchmark and approved commercial source can anchor specific fields.
+- **Expose the bottleneck and missing evidence.** The output explains which constraint may bind and which questions remain. This adds friction before quoting; measured traffic, latency, memory, data-movement, and resilience inputs can raise confidence.
+
 ## Demo scenarios
 
 The application can seed three fictional examples:
@@ -169,8 +175,9 @@ docs/testing/     RED/GREEN/REFACTOR checkpoints
 ```
 
 See [architecture](docs/architecture.md) and
-[assumptions and guardrails](docs/assumptions-and-guardrails.md) for calculation boundaries and the
-evidence required before commercial validation.
+[assumptions and guardrails](docs/assumptions-and-guardrails.md) for calculation boundaries. The
+[calibration method](docs/calibration-method.md) shows how to test workload comparability before a
+public or customer-approved benchmark can anchor a profile.
 
 ## Current limitations
 

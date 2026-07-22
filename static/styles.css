@@ -194,6 +194,10 @@ main { width: 100%; max-width: 1540px; margin: 0 auto; padding: 38px clamp(20px,
 .missing-card ul { width: 48%; margin: 0; padding: 0; color: var(--muted); font-size: .68rem; list-style: none; }
 .missing-card li { margin-bottom: 5px; }
 .missing-card li::before { margin-right: 7px; color: var(--amber); content: "·"; }
+.profile-boundary { display: block; }
+.profile-boundary dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px; margin: 14px 0 0; }
+.profile-boundary dt { color: var(--muted); font-size: .58rem; letter-spacing: .08em; text-transform: uppercase; }
+.profile-boundary dd { margin: 4px 0 0; color: var(--text); font-size: .66rem; line-height: 1.45; }
 
 .validation-panel ol { display: grid; margin: 0; padding: 18px 22px 20px; gap: 10px; list-style: none; counter-reset: validation; }
 .validation-panel li { position: relative; padding-left: 33px; color: var(--muted-strong); font-size: .73rem; line-height: 1.5; counter-increment: validation; }
@@ -244,6 +248,7 @@ td { color: var(--muted-strong); }
   .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .missing-card { display: block; }
   .missing-card ul { width: 100%; margin-top: 14px; }
+  .profile-boundary dl { grid-template-columns: 1fr; }
   .status-chip { max-width: 150px; text-align: center; }
   .request-states { right: 14px; bottom: 14px; width: calc(100vw - 28px); }
 }
