@@ -1,0 +1,95 @@
+@import url("https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;500;600&family=Barlow+Semi+Condensed:ital,wght@0,500;0,600;0,700;1,600&display=swap");
+
+/* Industrial drafting desk: dense, measured, and unapologetically operational. */
+:root {
+  --bg: #171714;
+  --surface: #22211c;
+  --surface-raised: #2b2922;
+  --surface-soft: #353127;
+  --line: #514a3c;
+  --line-strong: #776b55;
+  --text: #f3eedf;
+  --muted: #b8ae99;
+  --muted-strong: #ded3bd;
+  --signal: #ef6b3b;
+  --signal-ink: #21130e;
+  --cyan: #d9a441;
+  --amber: #e0b254;
+  --danger: #df6c62;
+  --radius: 2px;
+  --shadow: 0 18px 48px rgb(14 12 8 / 32%);
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: "Azeret Mono", ui-monospace, monospace;
+}
+
+body {
+  background:
+    linear-gradient(rgb(239 107 59 / 3%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(239 107 59 / 3%) 1px, transparent 1px),
+    var(--bg);
+  background-size: 32px 32px;
+}
+
+h1,
+h2,
+h3,
+.brand strong,
+.workspace-heading h1,
+.panel-header h2 {
+  font-family: "Barlow Semi Condensed", Impact, sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.015em;
+}
+
+.topbar { background: rgb(23 23 20 / 94%); }
+.scenario-rail,
+.primary-metrics article,
+.throughput-card,
+.finding-grid article,
+.missing-card { background: #1d1c18; }
+
+.brand-mark,
+.empty-visual {
+  border-radius: 0;
+}
+
+.button,
+.panel,
+.field input,
+.field select,
+.field textarea,
+.scenario-item,
+.assumption-drawer,
+.status-chip,
+.count-badge,
+.rail-filter input {
+  border-radius: 2px;
+}
+
+.button-primary,
+.button-primary:hover {
+  border-color: var(--signal);
+  background: var(--signal);
+  color: var(--signal-ink);
+}
+
+.button-quiet { background: #29261f; }
+.button-quiet:hover { background: #373127; }
+.environment i { box-shadow: none; }
+.notice { color: #eadbc2; background: rgb(224 178 84 / 10%); }
+.notice strong { color: #fff2d6; }
+
+.field input,
+.field select,
+.field textarea,
+.rail-filter input { background: #191814; }
+
+.primary-metrics strong { color: var(--signal); }
+.bridge-derated { background: var(--cyan) !important; }
+.bridge-utilization { background: var(--signal) !important; }

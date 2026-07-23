@@ -6,6 +6,25 @@
     <linearGradient id="lime" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#d5ff52"/><stop offset="1" stop-color="#5be7d3"/></linearGradient>
     <filter id="glow"><feGaussianBlur stdDeviation="8" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
     <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#242a31" stroke-width="1"/></pattern>
+    <style>
+      /* Industrial calculation-desk palette used by the live planner. */
+      text { font-family: "Azeret Mono", "Courier New", monospace !important; }
+      text[font-family="Arial, sans-serif"] { font-family: "Barlow Semi Condensed", Arial, sans-serif !important; }
+      stop[stop-color="#090b0d"] { stop-color: #171714 !important; }
+      stop[stop-color="#14191d"] { stop-color: #29271f !important; }
+      stop[stop-color="#d5ff52"] { stop-color: #ef6b3b !important; }
+      stop[stop-color="#5be7d3"] { stop-color: #d9a441 !important; }
+      [fill="#101418"], [fill="#171c21"] { fill: #22211c !important; }
+      [fill="#090c0f"], [fill="#0b0e11"] { fill: #191814 !important; }
+      [fill="#f4f5f2"] { fill: #f3eedf !important; }
+      [fill="#9aa3ac"], [fill="#77818c"] { fill: #b8ae99 !important; }
+      [fill="#d5ff52"] { fill: #ef6b3b !important; }
+      [fill="#5be7d3"] { fill: #d9a441 !important; }
+      [fill="#ffca61"] { fill: #e0b254 !important; }
+      [fill="#151a08"] { fill: #21130e !important; }
+      [stroke="#242a31"], [stroke="#303740"], [stroke="#303740"], [stroke="#343c46"] { stroke: #514a3c !important; }
+      [stroke="#2d343d"], [stroke="#2f3740"] { stroke: #776b55 !important; }
+    </style>
   </defs>
   <rect width="1200" height="620" fill="url(#bg)"/>
   <rect x="30" y="30" width="1140" height="560" rx="12" fill="url(#grid)" stroke="#303740"/>

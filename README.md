@@ -16,6 +16,14 @@ This portfolio implementation uses only fictional scenarios and generic illustra
 profiles. It does not produce a vendor quote, replace formal benchmarking, or replace a Solutions
 Engineer review.
 
+## Visual system
+
+The planner uses an **industrial calculation-desk** language: graphite panels, safety orange for the
+active calculation path, and brass for supporting signals. Barlow Semi Condensed creates a crisp,
+technical display hierarchy, while Azeret Mono is reserved for values and controls. A low-radius grid
+and subdued graph-paper ground reinforce that every output is an indicative range to be inspected,
+not a glossy recommendation to be accepted.
+
 ## Product tour
 
 ### Scenario workspace
