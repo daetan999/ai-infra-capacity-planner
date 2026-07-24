@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <title>Capacity Planner</title>
-  <rect width="64" height="64" rx="14" fill="#111a2a"/>
-  <path d="M16 46V30h8v16zm12 0V18h8v28zm12 0V25h8v21z" fill="#50e3c2"/>
-  <path d="M13 49h38" fill="none" stroke="#8aa0bd" stroke-width="3" stroke-linecap="round"/>
+  <rect width="64" height="64" rx="4" fill="#171714"/>
+  <path d="M16 46V30h8v16zm12 0V18h8v28zm12 0V25h8v21z" fill="#ef6b3b"/>
+  <path d="M13 49h38" fill="none" stroke="#d9a441" stroke-width="3" stroke-linecap="square"/>
 </svg>

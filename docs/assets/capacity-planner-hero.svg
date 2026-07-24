@@ -1,77 +1,80 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
   <title>Capacity planning control plane</title>
-  <desc>A dark technical workspace connects workload demand to infrastructure, commercial ranges, and an evidence plan.</desc>
+  <desc>An industrial drafting board connects a fictional inference demand profile to indicative capacity, cost, constraint, and evidence ranges.</desc>
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#090b0d"/><stop offset="1" stop-color="#14191d"/></linearGradient>
-    <linearGradient id="lime" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#d5ff52"/><stop offset="1" stop-color="#5be7d3"/></linearGradient>
-    <filter id="glow"><feGaussianBlur stdDeviation="8" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#242a31" stroke-width="1"/></pattern>
+    <pattern id="draft-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#353127" stroke-width="1"/>
+    </pattern>
     <style>
-      /* Industrial calculation-desk palette used by the live planner. */
-      text { font-family: "Azeret Mono", "Courier New", monospace !important; }
-      text[font-family="Arial, sans-serif"] { font-family: "Barlow Semi Condensed", Arial, sans-serif !important; }
-      stop[stop-color="#090b0d"] { stop-color: #171714 !important; }
-      stop[stop-color="#14191d"] { stop-color: #29271f !important; }
-      stop[stop-color="#d5ff52"] { stop-color: #ef6b3b !important; }
-      stop[stop-color="#5be7d3"] { stop-color: #d9a441 !important; }
-      [fill="#101418"], [fill="#171c21"] { fill: #22211c !important; }
-      [fill="#090c0f"], [fill="#0b0e11"] { fill: #191814 !important; }
-      [fill="#f4f5f2"] { fill: #f3eedf !important; }
-      [fill="#9aa3ac"], [fill="#77818c"] { fill: #b8ae99 !important; }
-      [fill="#d5ff52"] { fill: #ef6b3b !important; }
-      [fill="#5be7d3"] { fill: #d9a441 !important; }
-      [fill="#ffca61"] { fill: #e0b254 !important; }
-      [fill="#151a08"] { fill: #21130e !important; }
-      [stroke="#242a31"], [stroke="#303740"], [stroke="#303740"], [stroke="#343c46"] { stroke: #514a3c !important; }
-      [stroke="#2d343d"], [stroke="#2f3740"] { stroke: #776b55 !important; }
+      .display { font-family: "Barlow Semi Condensed", "Arial Narrow", sans-serif; font-weight: 600; }
+      .mono { font-family: "Azeret Mono", "Courier New", monospace; }
+      .label { fill: #b8ae99; font-size: 11px; letter-spacing: 1.6px; }
+      .body { fill: #f3eedf; font-size: 14px; }
+      .line { stroke: #514a3c; }
     </style>
   </defs>
-  <rect width="1200" height="620" fill="url(#bg)"/>
-  <rect x="30" y="30" width="1140" height="560" rx="12" fill="url(#grid)" stroke="#303740"/>
-  <path d="M70 88H1130" stroke="#303740"/>
-  <circle cx="74" cy="59" r="5" fill="#ff806f"/>
-  <circle cx="93" cy="59" r="5" fill="#ffca61"/>
-  <circle cx="112" cy="59" r="5" fill="#d5ff52"/>
-  <text x="150" y="65" fill="#9aa3ac" font-family="monospace" font-size="13" letter-spacing="2">CAPACITY PLANNER / SCENARIO 03</text>
 
-  <rect x="72" y="122" width="278" height="420" rx="7" fill="#101418" stroke="#303740"/>
-  <text x="96" y="156" fill="#9aa3ac" font-family="monospace" font-size="11" letter-spacing="2">DEMAND PROFILE</text>
-  <text x="96" y="187" fill="#f4f5f2" font-family="Arial, sans-serif" font-size="21" font-weight="600">Real-time copilot</text>
-  <rect x="96" y="215" width="230" height="52" rx="4" fill="#090c0f" stroke="#343c46"/>
-  <text x="111" y="237" fill="#77818c" font-family="monospace" font-size="9">WORKLOAD MODE</text><text x="111" y="255" fill="#d5ff52" font-family="monospace" font-size="12">LLM INFERENCE</text>
-  <rect x="96" y="279" width="108" height="66" rx="4" fill="#171c21" stroke="#303740"/>
-  <rect x="218" y="279" width="108" height="66" rx="4" fill="#171c21" stroke="#303740"/>
-  <text x="110" y="302" fill="#77818c" font-family="monospace" font-size="8">PEAK RPS</text><text x="110" y="327" fill="#f4f5f2" font-family="monospace" font-size="20">32.4</text>
-  <text x="232" y="302" fill="#77818c" font-family="monospace" font-size="8">CONTEXT</text><text x="232" y="327" fill="#f4f5f2" font-family="monospace" font-size="20">8K</text>
-  <rect x="96" y="357" width="230" height="70" rx="4" fill="#0b0e11" stroke="#303740"/>
-  <text x="111" y="380" fill="#77818c" font-family="monospace" font-size="8">TARGET UTILIZATION</text>
-  <rect x="111" y="399" width="196" height="7" rx="3" fill="#293039"/><rect x="111" y="399" width="128" height="7" rx="3" fill="url(#lime)"/>
-  <circle cx="239" cy="402.5" r="6" fill="#d5ff52" filter="url(#glow)"/>
-  <rect x="96" y="453" width="230" height="54" rx="4" fill="#d5ff52"/>
-  <text x="128" y="485" fill="#151a08" font-family="Arial, sans-serif" font-size="13" font-weight="700">CALCULATE ENVELOPE  →</text>
+  <rect width="1200" height="620" fill="#171714"/>
+  <rect x="28" y="28" width="1144" height="564" fill="url(#draft-grid)" stroke="#776b55"/>
+  <rect x="28" y="28" width="1144" height="58" fill="#1d1c18" stroke="#514a3c"/>
+  <path d="M54 57h18l8-14 10 28 10-14h24" fill="none" stroke="#ef6b3b" stroke-width="4"/>
+  <text x="145" y="64" class="mono label">CAPACITY PLANNER / INDICATIVE MODEL</text>
+  <circle cx="1118" cy="57" r="5" fill="#ef6b3b"/>
+  <text x="1134" y="62" class="mono label">LIVE</text>
 
-  <path d="M350 331H418" stroke="#5be7d3" stroke-width="2" stroke-dasharray="5 8"/>
-  <circle cx="384" cy="331" r="7" fill="#5be7d3" filter="url(#glow)"/>
+  <rect x="62" y="120" width="330" height="430" fill="#22211c" stroke="#776b55"/>
+  <text x="86" y="151" class="mono label">01 · DEMAND PROFILE</text>
+  <text x="86" y="187" class="display" fill="#f3eedf" font-size="27">Realtime assistant</text>
+  <rect x="86" y="215" width="282" height="58" fill="#191814" stroke="#514a3c"/>
+  <text x="102" y="238" class="mono label">WORKLOAD MODE</text>
+  <text x="102" y="260" class="mono" fill="#ef6b3b" font-size="14">LLM INFERENCE</text>
+  <rect x="86" y="289" width="133" height="74" fill="#2b2922" stroke="#514a3c"/>
+  <rect x="235" y="289" width="133" height="74" fill="#2b2922" stroke="#514a3c"/>
+  <text x="102" y="314" class="mono label">PEAK RPS</text>
+  <text x="102" y="345" class="mono" fill="#f3eedf" font-size="22">46.2</text>
+  <text x="251" y="314" class="mono label">CONTEXT</text>
+  <text x="251" y="345" class="mono" fill="#f3eedf" font-size="22">8K</text>
+  <rect x="86" y="379" width="282" height="74" fill="#191814" stroke="#514a3c"/>
+  <text x="102" y="404" class="mono label">TARGET UTILIZATION</text>
+  <line x1="102" y1="430" x2="348" y2="430" stroke="#776b55" stroke-width="8"/>
+  <line x1="102" y1="430" x2="255" y2="430" stroke="#ef6b3b" stroke-width="8"/>
+  <circle cx="255" cy="430" r="7" fill="#ef6b3b"/>
+  <rect x="86" y="476" width="282" height="50" fill="#ef6b3b"/>
+  <text x="128" y="507" class="display" fill="#21130e" font-size="16">CALCULATE ENVELOPE →</text>
 
-  <rect x="418" y="122" width="710" height="420" rx="7" fill="#101418" stroke="#303740"/>
-  <text x="444" y="156" fill="#9aa3ac" font-family="monospace" font-size="11" letter-spacing="2">CAPACITY ENVELOPE</text>
-  <rect x="444" y="180" width="205" height="112" rx="4" fill="#0b0e11" stroke="#303740"/>
-  <rect x="663" y="180" width="205" height="112" rx="4" fill="#0b0e11" stroke="#303740"/>
-  <rect x="882" y="180" width="220" height="112" rx="4" fill="#0b0e11" stroke="#303740"/>
-  <text x="463" y="207" fill="#77818c" font-family="monospace" font-size="9">ACCELERATORS</text><text x="463" y="255" fill="#d5ff52" font-family="monospace" font-size="37">18–24</text><text x="463" y="276" fill="#77818c" font-family="monospace" font-size="9">ILLUSTRATIVE PROFILE A</text>
-  <text x="682" y="207" fill="#77818c" font-family="monospace" font-size="9">MONTHLY RANGE</text><text x="682" y="255" fill="#d5ff52" font-family="monospace" font-size="30">$68–91K</text><text x="682" y="276" fill="#77818c" font-family="monospace" font-size="9">COMPUTE + FACILITY</text>
-  <text x="901" y="207" fill="#77818c" font-family="monospace" font-size="9">CONFIDENCE</text><text x="901" y="250" fill="#ffca61" font-family="monospace" font-size="26">MEDIUM</text><path d="M901 270h158" stroke="#2f3740" stroke-width="7"/><path d="M901 270h98" stroke="#ffca61" stroke-width="7"/>
+  <path d="M392 334h62" fill="none" stroke="#d9a441" stroke-width="2" stroke-dasharray="6 7"/>
+  <circle cx="423" cy="334" r="7" fill="#d9a441"/>
 
-  <rect x="444" y="306" width="658" height="112" rx="4" fill="#171c21" stroke="#303740"/>
-  <text x="463" y="333" fill="#77818c" font-family="monospace" font-size="9">THROUGHPUT BRIDGE</text>
-  <path d="M463 370H1068" stroke="#2d343d" stroke-width="12"/>
-  <path d="M463 370H856" stroke="#5be7d3" stroke-width="12"/>
-  <path d="M463 370H714" stroke="#d5ff52" stroke-width="12"/>
-  <line x1="714" y1="353" x2="714" y2="389" stroke="#f4f5f2"/>
-  <text x="463" y="402" fill="#9aa3ac" font-family="monospace" font-size="9">THEORETICAL</text><text x="675" y="402" fill="#9aa3ac" font-family="monospace" font-size="9">DERATED 55%</text><text x="856" y="402" fill="#9aa3ac" font-family="monospace" font-size="9">UTILIZED 64%</text>
+  <rect x="454" y="120" width="684" height="430" fill="#22211c" stroke="#776b55"/>
+  <text x="478" y="151" class="mono label">02 · CAPACITY ENVELOPE</text>
+  <rect x="478" y="176" width="202" height="112" fill="#191814" stroke="#514a3c"/>
+  <rect x="694" y="176" width="202" height="112" fill="#191814" stroke="#514a3c"/>
+  <rect x="910" y="176" width="204" height="112" fill="#191814" stroke="#514a3c"/>
+  <text x="496" y="202" class="mono label">ACCELERATORS</text>
+  <text x="496" y="249" class="mono" fill="#ef6b3b" font-size="36">7–8</text>
+  <text x="496" y="272" class="mono label">ILLUSTRATIVE PROFILE</text>
+  <text x="712" y="202" class="mono label">MONTHLY RANGE</text>
+  <text x="712" y="246" class="mono" fill="#ef6b3b" font-size="27">$19–40K</text>
+  <text x="712" y="272" class="mono label">COMPUTE PLANNING BAND</text>
+  <text x="928" y="202" class="mono label">CONFIDENCE</text>
+  <text x="928" y="244" class="mono" fill="#d9a441" font-size="27">HIGH</text>
+  <line x1="928" y1="266" x2="1088" y2="266" stroke="#776b55" stroke-width="8"/>
+  <line x1="928" y1="266" x2="1060" y2="266" stroke="#d9a441" stroke-width="8"/>
 
-  <rect x="444" y="432" width="318" height="82" rx="4" fill="#0b0e11" stroke="#303740"/>
-  <rect x="776" y="432" width="326" height="82" rx="4" fill="#0b0e11" stroke="#303740"/>
-  <text x="463" y="457" fill="#77818c" font-family="monospace" font-size="9">BOTTLENECK</text><text x="463" y="485" fill="#f4f5f2" font-family="Arial, sans-serif" font-size="17">Memory bandwidth</text>
-  <text x="795" y="457" fill="#77818c" font-family="monospace" font-size="9">NEXT EVIDENCE</text><text x="795" y="485" fill="#f4f5f2" font-family="Arial, sans-serif" font-size="17">Peak-load benchmark</text>
+  <rect x="478" y="304" width="636" height="106" fill="#2b2922" stroke="#514a3c"/>
+  <text x="496" y="331" class="mono label">THROUGHPUT BRIDGE</text>
+  <line x1="496" y1="365" x2="1088" y2="365" stroke="#776b55" stroke-width="12"/>
+  <line x1="496" y1="365" x2="866" y2="365" stroke="#d9a441" stroke-width="12"/>
+  <line x1="496" y1="365" x2="750" y2="365" stroke="#ef6b3b" stroke-width="12"/>
+  <line x1="750" y1="348" x2="750" y2="382" stroke="#f3eedf" stroke-width="2"/>
+  <text x="496" y="394" class="mono label">THEORETICAL</text>
+  <text x="712" y="394" class="mono label">DERATED</text>
+  <text x="905" y="394" class="mono label">62% UTILIZED</text>
+
+  <rect x="478" y="426" width="306" height="98" fill="#191814" stroke="#514a3c"/>
+  <rect x="798" y="426" width="316" height="98" fill="#191814" stroke="#514a3c"/>
+  <text x="496" y="453" class="mono label">PRIMARY CONSTRAINT</text>
+  <text x="496" y="488" class="display" fill="#f3eedf" font-size="19">Network movement</text>
+  <text x="816" y="453" class="mono label">NEXT EVIDENCE</text>
+  <text x="816" y="488" class="display" fill="#f3eedf" font-size="19">Peak-load replay</text>
 </svg>

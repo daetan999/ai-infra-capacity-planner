@@ -1,121 +1,112 @@
-# Enterprise AI Capacity & Commercial Sizing Planner
+# AI Infrastructure Capacity Planner
 
 [![CI](https://github.com/daetan999/ai-infra-capacity-planner/actions/workflows/ci.yml/badge.svg)](https://github.com/daetan999/ai-infra-capacity-planner/actions/workflows/ci.yml)
-[![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![License](https://img.shields.io/badge/license-MIT-182230)](LICENSE)
 
-![Capacity planner hero](docs/assets/capacity-planner-hero.svg)
+An explainable first-pass planner that turns an AI workload into indicative infrastructure and
+commercial ranges. It keeps the assumptions, likely constraint, confidence deductions, and
+validation questions beside the estimate so a reviewer can see what must be measured next.
 
-A runnable, explainable first-pass planner for translating an AI workload into indicative
-infrastructure and commercial ranges before formal benchmarking. It makes assumptions, missing
-evidence, bottleneck hypotheses, and validation questions visible instead of presenting a fake
-exact bill of materials.
+![Industrial capacity-planning workspace showing a fictional real-time inference scenario and its indicative capacity range](docs/assets/capacity-planner-workspace.png)
 
-This portfolio implementation uses only fictional scenarios and generic illustrative hardware
-profiles. It does not produce a vendor quote, replace formal benchmarking, or replace a Solutions
-Engineer review.
+*A seeded fictional inference workload in the live planning workspace. The input sheet remains
+visible beside the resulting capacity envelope so the estimate can be reviewed rather than treated
+as a quote.*
+
+This is a portfolio implementation built with fictional scenarios and generic illustrative hardware
+profiles. It does not issue a bill of materials, use live supplier pricing, or replace representative
+benchmarking and Solutions Engineer review.
+
+## The decision it supports
+
+Early infrastructure discovery often starts before workload evidence is complete. The planner helps
+frame whether a training, inference, retrieval, vision, or batch workload is ready for deeper sizing
+and which missing measurements block a credible commercial discussion.
+
+For each scenario it:
+
+1. records demand, model, data, service-level, facility, and growth assumptions;
+2. calculates deterministic low-to-high ranges for compute, memory, storage, network, rack, power,
+   utilization, and monthly compute cost;
+3. exposes theoretical, derated, and target-utilization views;
+4. identifies a primary bottleneck hypothesis and confidence basis;
+5. turns missing evidence into validation questions; and
+6. exports the scenario and result as JSON or a Markdown sizing brief.
+
+## Review the trade-offs
+
+![Focused comparison table for three fictional capacity-planning scenarios](docs/assets/capacity-planner-comparison.png)
+
+*The comparison view keeps workload-specific accelerator, cost, power, confidence, and profile
+calibration ranges in one review surface. The figures are illustrative and come from the repository's
+bundled demo scenarios.*
+
+The application includes three fictional examples: a time-bounded model-training window, a
+latency-sensitive real-time assistant, and a private RAG workload with growing document storage.
+They are safe to use in demonstrations and contain no customer names, credentials, production
+telemetry, proprietary configurations, or supplier quotes.
 
 ## Visual system
 
-The planner uses an **industrial calculation-desk** language: graphite panels, safety orange for the
-active calculation path, and brass for supporting signals. Barlow Semi Condensed creates a crisp,
-technical display hierarchy, while Azeret Mono is reserved for values and controls. A low-radius grid
-and subdued graph-paper ground reinforce that every output is an indicative range to be inspected,
-not a glossy recommendation to be accepted.
+The interface is an industrial planning desk rather than a generic analytics dashboard:
 
-## Product tour
+- **Graphite** grounds the workspace and its calculation panels.
+- **Safety orange** marks the active planning path and primary capacity figures.
+- **Brass** identifies evidence, utilization, and caution states.
+- **Barlow Semi Condensed** carries the operational hierarchy.
+- **Azeret Mono** keeps inputs, ranges, status labels, and comparison data visually aligned.
 
-### Scenario workspace
+Square geometry, drafting-grid lines, compact labels, and visible source assumptions reinforce that
+the output is a working calculation to inspect—not a polished recommendation to accept.
 
-![Capacity scenario workspace](docs/assets/capacity-planner-workspace.png)
+## Calculation boundary
 
-Create or edit a workload, tune explicit planning assumptions, and inspect compute, memory, storage,
-network, rack, power, cost, utilization, confidence, and validation ranges in one workspace.
-
-### Side-by-side comparison
-
-![Capacity scenario comparison](docs/assets/capacity-planner-comparison.png)
-
-Compare fictional training, real-time inference, and RAG scenarios without hiding differences in
-precision, target utilization, demand growth, latency, or evidence quality.
-
-## Planning workflow
-
-![Sizing workflow](docs/assets/sizing-workflow.svg)
-
-1. **Frame demand** — select the workload mode and record model, traffic, data, latency, availability,
-   region, and growth inputs relevant to that mode.
-2. **Expose assumptions** — review the illustrative accelerator profile, derating, target utilization,
-   power, and pricing source type.
-3. **Calculate ranges** — produce deterministic low/base/high planning ranges, never a single exact
-   bill of materials.
-4. **Find the constraint** — identify the likely compute, memory, storage, network, latency, or
-   completion-window bottleneck.
-5. **Test sensitivity** — show how batching, quantization, growth, and latency expectations change the
-   result.
-6. **Qualify confidence** — turn absent or assumed inputs into a confidence deduction and explicit
-   technical questions.
-7. **Plan validation** — define a bounded proof of concept, measurement plan, and commercial review
-   gate.
-8. **Export the brief** — share the scenario and visible assumptions as JSON or Markdown.
-
-## Deterministic sizing model
-
-![Sizing model](docs/assets/sizing-model.svg)
-
-The calculation engine supports:
+The deterministic engine supports five workload modes:
 
 - LLM training
 - LLM inference
 - RAG inference
-- Vision inference
-- Batch AI or HPC workloads
+- vision inference
+- batch AI or HPC
 
-Each result distinguishes theoretical throughput, production-derated throughput, and target
-utilization. Configurable profiles in `data/accelerator_profiles.yaml` contain a generic illustrative
-name, memory, theoretical throughput, derating factor, power range, price assumption source type,
-and an explicit illustrative flag. Vendor marketing claims are not embedded throughout the code.
+Generic profiles in [`data/accelerator_profiles.yaml`](data/accelerator_profiles.yaml) define
+illustrative memory, throughput, derating, power, and pricing assumptions with calibration
+provenance. The engine returns ranges rather than a topology-level design and carries the profile
+limitations into both the interface and exports.
 
-Outputs include indicative ranges for accelerators, CPUs, memory, storage capacity, network,
-racks, power, monthly compute cost, and expected utilization, plus storage-throughput and
-network-bandwidth considerations. The engine also returns the primary bottleneck hypothesis,
-confidence score, missing inputs, benchmark assumptions, next questions, proposed PoC workload,
-measurement plan, and indicative commercial opportunity band.
+See the [calibration method](docs/calibration-method.md) for the evidence-matching procedure and
+[assumptions and guardrails](docs/assumptions-and-guardrails.md) for the interpretation boundary.
 
-## Commercial relevance
+## Architecture
 
-- **Early qualification:** separates a credible infrastructure opportunity from an unbounded AI idea.
-- **Discovery quality:** reveals which traffic, model, data, latency, availability, and growth facts are
-  still assumptions.
-- **Solution alignment:** gives account teams and engineers a reproducible starting point for a deeper
-  sizing session.
-- **Commercial framing:** communicates an opportunity band without presenting fictional precision as
-  a quote.
-- **PoC control:** converts the bottleneck hypothesis into measurable validation work and decision
-  criteria.
-- **Change analysis:** makes growth, batching, precision, and latency trade-offs visible before a
-  design hardens.
+The project is a small modular monolith:
 
-## Design Decisions
+```text
+Browser workspace
+      │
+      ▼
+FastAPI boundary ─────► SQLite scenario repository
+      │
+      ├───────────────► Deterministic sizing engine
+      │                         │
+      │                         ▼
+      │                Illustrative YAML profiles
+      │
+      └───────────────► JSON and Markdown exports
+```
 
-- **Return ranges instead of a bill of materials.** Early discovery cannot support topology-level precision. The planner trades a definitive answer for visible uncertainty; representative benchmarks and an SE-reviewed design can replace the range.
-- **Keep profiles generic and carry their provenance.** This avoids presenting vendor claims or placeholder prices as current evidence. Generic profiles limit procurement usefulness; a workload-comparable benchmark and approved commercial source can anchor specific fields.
-- **Expose the bottleneck and missing evidence.** The output explains which constraint may bind and which questions remain. This adds friction before quoting; measured traffic, latency, memory, data-movement, and resilience inputs can raise confidence.
+| Area | Responsibility |
+|---|---|
+| `app/schemas.py` | Request validation and API contracts |
+| `app/engine.py` | Side-effect-free sizing, confidence, and sensitivity policy |
+| `app/repository.py` | Local SQLite persistence |
+| `app/main.py` | HTTP routes, demo seeding, comparison, and exports |
+| `templates/` and `static/` | Responsive browser workspace and interactions |
+| `tests/` | Engine, repository, API, workflow, demo-data, and interface contracts |
 
-## Demo scenarios
+The full rationale is documented in [Architecture](docs/architecture.md). Interactive OpenAPI
+documentation is available at `/docs` while the service is running.
 
-The application can seed three fictional examples:
-
-- a time-bounded foundation-model training run;
-- a latency-sensitive real-time LLM inference service;
-- a retrieval-augmented inference service with growing document storage.
-
-No customer names, proprietary configurations, credentials, production telemetry, supplier quotes,
-or real opportunity values are included. Runtime scenarios are stored in a local SQLite database
-excluded from version control.
-
-## Quick start
+## Run locally
 
 Requirements: Python 3.12 or later.
 
@@ -124,81 +115,42 @@ git clone https://github.com/daetan999/ai-infra-capacity-planner.git
 cd ai-infra-capacity-planner
 python -m venv .venv
 source .venv/bin/activate
-pip install -e '.[dev]'
+python -m pip install -e '.[dev]'
 cp .env.example .env
 uvicorn app.main:app --reload
 ```
 
-Open `http://127.0.0.1:8000`. To run the container instead:
+Open `http://127.0.0.1:8000`. Demo scenarios are seeded by default when the local database is empty.
+Set `SEED_DEMO_DATA=false` to start without them. The container path is:
 
 ```bash
 docker compose up --build
 ```
 
-## API surface
+Runtime scenarios are stored in a local SQLite database excluded from version control.
 
-| Method | Route | Purpose |
-|---|---|---|
-| `GET` | `/health` | Liveness response |
-| `GET` | `/api/scenarios` | List saved scenarios and their latest result |
-| `POST` | `/api/scenarios` | Validate, calculate, and save a scenario |
-| `GET` | `/api/scenarios/{id}` | Retrieve one scenario and result |
-| `PUT` | `/api/scenarios/{id}` | Recalculate a scenario with edited inputs |
-| `DELETE` | `/api/scenarios/{id}` | Delete a local scenario |
-| `POST` | `/api/scenarios/compare` | Compare selected scenarios and assumptions |
-| `GET` | `/api/scenarios/{id}/export?format=json` | Export structured scenario evidence |
-| `GET` | `/api/scenarios/{id}/export?format=markdown` | Export a review-ready sizing brief |
-
-Interactive OpenAPI documentation is available at `/docs` while the service is running.
-
-## Verification
+## Quality checks
 
 ```bash
 make lint
+node --check static/app.js
 make test
-make coverage
-docker build -t capacity-planner .
+docker build -t capacity-planner:test .
 ```
 
-The suite covers deterministic calculation, profile validation, persistence, API errors, export,
-demo data, and interface contracts. CI enforces linting, browser-script syntax, an 80% branch-coverage
-floor, and a clean-checkout container build. This application is deployed from its repository checkout
-or container image; it is not published as a standalone Python wheel.
+Pytest is configured with branch coverage and an 80% application-coverage floor. CI runs Ruff,
+JavaScript syntax validation, the test suite, and a clean container build.
 
-## Repository map
+## Honest limitations
 
-```text
-app/
-  domain.py       Workload modes and stable calculation types
-  engine.py       Deterministic sizing, confidence, and sensitivity policy
-  repository.py   SQLite scenario persistence
-  schemas.py      External API validation
-  main.py         HTTP, HTML, comparison, export, and demo orchestration
-data/             Generic illustrative accelerator profiles
-templates/        Product workspace
-static/           Responsive interface and interaction logic
-tests/            Engine, persistence, API, demo, and UI contract tests
-docs/assets/      Product diagrams and verified application screenshots
-docs/testing/     RED/GREEN/REFACTOR checkpoints
-```
-
-See [architecture](docs/architecture.md) and
-[assumptions and guardrails](docs/assumptions-and-guardrails.md) for calculation boundaries. The
-[calibration method](docs/calibration-method.md) shows how to test workload comparability before a
-public or customer-approved benchmark can anchor a profile.
-
-## Current limitations
-
-This public implementation is a single-user, local-first planning aid. It does not include supplier
-catalog synchronization, live regional price feeds, benchmark execution, topology validation,
-reservation or discount modeling, taxes, multi-tenant isolation, authentication, procurement
-approval, or production observability. Every result requires human review against measured workload
-behavior and current supplier terms.
+This is a single-user, local-first planning aid. It has no authentication, multi-tenant isolation,
+supplier catalog synchronization, live price feeds, benchmark execution, topology validation,
+reservation or discount modeling, tax calculation, procurement workflow, or production
+observability. Every result must be reviewed against measured workload behavior, supported hardware
+and software, the target operating environment, and current commercial terms.
 
 ## License
 
 Released under the [MIT License](LICENSE).
 
----
-
-[Part of the Enterprise AI Infrastructure Portfolio](https://github.com/daetan999/technical_resume)
+[Enterprise AI Infrastructure Portfolio](https://github.com/daetan999/technical_resume)
